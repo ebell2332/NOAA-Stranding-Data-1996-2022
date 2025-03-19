@@ -96,21 +96,50 @@ group_name
 
 #ggsave("SpeciesGroup_name-barchart.png", plot = group_name, width = 7, height=6, units = "in", dpi=300)
 
+
+#. Box Plot--By Species Group
+
+
 # ---------------------------------------Species Group Age Class and Sex ----------------------------
 ------------------------------------------------------------------------------
-  #. **Species Age/Class - not a fan, hard to see data clearly
-  
+  #. **Species Age/Class 
+#. **Use this first then graph it by species group
   species_age_class <- stranding_data %>%
   group_by(Age_Class, Sex, Group_species, Year_of_Observation ) %>%
   summarise(Count = n(), .groups = "drop")
 
 species_age_class
 
-species_age_class <- ggplot(species_age_class, aes(x = Year_of_Observation, y = Count, color = Age_Class)) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2) +
-  facet_wrap(~Group_species) +
-  labs(title = "Trends in Age Class by Species Group", x = "Year", y = "Number of Strandings", color = "Age Class") +
-  theme_minimal()
 
-species_age_class
+#. **Cetacean Age Class Bar Graph
+cetacean_age <- species_age_class %>%
+  filter(Group_species == "Cetaceans")
+
+
+cetacean_age_graph <- ggplot(cetacean_age, aes(x = Age_Class, y = Count, fill = Age_Class)) +
+  geom_col() +
+  theme_minimal() +
+  labs(title = "Age Class Distribution of Cetacean Strandings",
+       x = "Age Class",
+       y = "Number of Strandings") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+cetacean_age_graph
+ggsave("Cetacean_Age_Class-barchart.png", plot = cetacean_age_graph, width = 7, height=6, units = "in", dpi=300)
+
+#. **Pinniped Age Class Strandings Bar Graph
+pinniped_age <- species_age_class %>%
+  filter(Group_species == "Pinnipeds")
+
+pinniped_age_graph <- ggplot(pinniped_age, aes(x = Age_Class, y = Count, fill = Age_Class)) +
+  geom_col() +
+  theme_minimal() +
+  labs(title = "Age Class Distribution of Pinniped Strandings",
+       x = "Age Class",
+       y = "Number of Strandings") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+pinniped_age_graph
+ggsave("Pinniped_Age_Class-barchart.png", plot = pinniped_age_graph, width = 7, height=6, units = "in", dpi=300)
+
+
+
+
