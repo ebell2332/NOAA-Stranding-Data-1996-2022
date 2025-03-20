@@ -126,6 +126,15 @@ cetacean_age_graph <- ggplot(cetacean_age, aes(x = Age_Class, y = Count, fill = 
 cetacean_age_graph
 ggsave("Cetacean_Age_Class-barchart.png", plot = cetacean_age_graph, width = 7, height=6, units = "in", dpi=300)
 
+#. --Running Chi-Square Test for Cetaceans with age classes
+
+# Create a contingency table
+c_age_species_table <- table(stranding_data$Age_Class[stranding_data$Group_species=="Cetaceans"], stranding_data$Group_species[stranding_data$Group_species=="Cetaceans"])
+
+# Perform Chi-Square Test
+chisq.test(c_age_species_table)
+
+
 #. **Pinniped Age Class Strandings Bar Graph
 pinniped_age <- species_age_class %>%
   filter(Group_species == "Pinnipeds")
@@ -139,6 +148,15 @@ pinniped_age_graph <- ggplot(pinniped_age, aes(x = Age_Class, y = Count, fill = 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 pinniped_age_graph
 ggsave("Pinniped_Age_Class-barchart.png", plot = pinniped_age_graph, width = 7, height=6, units = "in", dpi=300)
+
+
+#. --Running Chi-Square Test for Cetaceans with age classes
+
+# Create a contingency table
+p_age_species_table <- table(stranding_data$Age_Class[stranding_data$Group_species=="Pinnipeds"], stranding_data$Group_species[stranding_data$Group_species=="Pinnipeds"])
+
+# Perform Chi-Square Test
+chisq.test(p_age_species_table)
 
 
 
