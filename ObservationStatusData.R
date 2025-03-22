@@ -106,3 +106,52 @@ healthy_species1 <- ggplot(species_healthy, aes(x = Year_of_Observation, y = Pro
     theme_minimal()
 healthy_species1
 
+
+#------------------------------------Unusual Mortality Events & Mass Strandings-------------------------------------
+
+##. Unusual Mortality Events
+
+#-- Count rows where "UME", "Unusual Mortality Event" appears in the "GE_Type(s)_GE_Module" column
+ume_count <- sum(grepl("UME|Unusual Mortality Event", stranding_data$`GE_Type(s)_GE_Module`, ignore.case = TRUE))
+
+# Print the total count
+print(ume_count)
+
+
+##. Mass Strandings
+
+#-- Count rows where "Mass Strandings" appears in the "GE_Type(s)_GE_Module" column
+mass_str_count <- sum(grepl("Mass Stranding", stranding_data$`GE_Type(s)_GE_Module`, ignore.case = TRUE))
+
+# Print the total count
+print(mass_str_count)
+
+
+
+##. Graphing Both Types from GE_Type(s)_GE_Module
+
+# Identify and count UMEs and Mass Strandings
+stranding_data$Event_Type <- "Other"  # Default category
+
+# Classify events (you can add more patterns if needed)
+stranding_data$Event_Type[grepl("UME|Unusual Mortality Event", stranding_data$`GE_Type(s)_GE_Module`, ignore.case = TRUE)] <- "UME"
+stranding_data$Event_Type[grepl("Mass Stranding", stranding_data$`GE_Type(s)_GE_Module`, ignore.case = TRUE)] <- "Mass Stranding"
+
+# Summarize counts
+event_counts <- as.data.frame(table(stranding_data$Event_Type))
+
+# Create a bar chart
+ggplot(event_counts, aes(x = Var1, y = Freq, fill = Var1)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Occurrences of UME and Mass Strandings",
+       x = "Event Type",
+       y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+#----------------------------------------Entanglement Count--------------------------------------
+
+
+#--------------------------------------Ingestion-------------------------------
+
