@@ -1,7 +1,7 @@
 stranding_data <- read_excel("/Users/ebell23/Downloads/1996-2022_Stranding_working_data.xlsx")
 
 
-###---By Species Groups
+###---By Species Groups----
 stranding_data <- stranding_data %>%
   mutate(Group_species = case_when(
     Species %in% c("acutorostrata", "ampullatus", "attenuata", "bidens", "borealis", "breviceps", "cavirostris", "crassidens", "densirostris", "electra", "europaeus", "glacialis", "macrocephalus", "macrorhynchus", "melas", "musculus", "novaenagliae", "physalus", "sima", "acutus", "albirostris", "bredanensis", "capensis", "clymene", "coeruleoalba","crugiger", "delphis", "frontalis", "griseus", "truncatus","phocoena") ~ "Cetaceans",
@@ -77,7 +77,7 @@ releasable_plot  <- ggplot(stranding_data, aes(x = `Deemed_Healthy/Releasable_Fl
   
 #ggsave(filename = "Healthy_ReleasedStrandings_plot.png", plot = releasable_plot, width = 5, height=4, units = "in", dpi=300) 
 
-#  -------BY Species Group Release Status  
+#  -------BY Species Group Release Status----  
   
 ##. By Speceis group--Species group x Releasable x Number of Strandings
   species_healthy <- stranding_data %>%
@@ -151,7 +151,8 @@ ggplot(event_counts, aes(x = Var1, y = Freq, fill = Var1)) +
 
 
 #----------------------------------------Entanglement Count--------------------------------------
-
+ #Still working on
 
 #--------------------------------------Ingestion-------------------------------
+ #Still working on
 

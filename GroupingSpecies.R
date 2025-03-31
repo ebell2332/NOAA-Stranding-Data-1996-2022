@@ -2,7 +2,7 @@ stranding_data <- read_excel("/Users/ebell23/Downloads/1996-2022_Stranding_worki
 
 # -----------Species Data, Common Name, Species Groups----------
 
-#1. #. **Charting Different Species
+#. **Charting Different Species----
 
 #-- Count strandings per species
 Species_counts <- stranding_data %>%
@@ -17,7 +17,7 @@ ggplot(Species_counts, aes(x = "", y = Count, fill = Species)) +
   labs(title = "Proportion of Strandings by Species") +
   theme_void()
 
-# Only doing Top 5 species 
+# Only doing Top 5 species----
 Species_counts <- stranding_data %>%
   count(Species, name = "Count") %>%    # Create count column
   arrange(desc(Count))    # Sort by highest count
@@ -25,7 +25,7 @@ Species_counts <- stranding_data %>%
 top_species <- Species_counts %>% 
   top_n(5, wt = Count)  # Select top 5 species
 
-#.--Grouping Top 5 species
+#.Grouping Top 5 species----
 Species_counts <- Species_counts %>%
   mutate(Species = ifelse(Species %in% top_species$Species, Species, "Other")) %>%      # If not in top 5 species, label as other
   group_by(Species) %>%
@@ -44,9 +44,9 @@ species_pie_chart
 
 #ggsave("Top5_Species_Strandings-piechart.png", plot = species_pie_chart, width=5, height=4, units="in", dpi=300)
 
-# --------------------------------Grouping Species by Common Name---------------------------
--------------------------------------------------------------------------
-### Grouping By Common Name
+# -----------------------------------------------------------
+# Grouping Species by Common Name----
+
 stranding_data1 <- stranding_data %>%
   mutate(Species_group = case_when(
     Species %in% c("acutorostrata", "ampullatus", "attenuata", "bidens", "borealis", "breviceps", "cavirostris", "crassidens", "densirostris", "electra", "europaeus", "glacialis", "macrocephalus", "macrorhynchus", "melas", "musculus", "novaenagliae", "physalus", "sima") ~ "Whales",
@@ -71,8 +71,8 @@ common_name
 
 #ggsave("Common_Name_Groupings-barchart.png", plot = common_name, width = 7, height = 7, units = "in", dpi=300)
 
-# ------------------------------------Grouping By Species Group-------------------------------------------
----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
+# Grouping By Species Group-----
 ###---By Species Groups
 stranding_data <- stranding_data %>%
   mutate(Group_species = case_when(
@@ -126,7 +126,7 @@ cetacean_age_graph <- ggplot(cetacean_age, aes(x = Age_Class, y = Count, fill = 
 cetacean_age_graph
 ggsave("Cetacean_Age_Class-barchart.png", plot = cetacean_age_graph, width = 7, height=6, units = "in", dpi=300)
 
-#. --Running Chi-Square Test for Cetaceans with age classes
+#. Running Chi-Square Test for Cetaceans with age classes----
 
 # Create a contingency table
 c_age_species_table <- table(stranding_data$Age_Class[stranding_data$Group_species=="Cetaceans"], stranding_data$Group_species[stranding_data$Group_species=="Cetaceans"])
@@ -150,7 +150,7 @@ pinniped_age_graph
 ggsave("Pinniped_Age_Class-barchart.png", plot = pinniped_age_graph, width = 7, height=6, units = "in", dpi=300)
 
 
-#. --Running Chi-Square Test for Cetaceans with age classes
+#. --Running Chi-Square Test for Cetaceans with age classes----
 
 # Create a contingency table
 p_age_species_table <- table(stranding_data$Age_Class[stranding_data$Group_species=="Pinnipeds"], stranding_data$Group_species[stranding_data$Group_species=="Pinnipeds"])

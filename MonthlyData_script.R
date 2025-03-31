@@ -1,7 +1,7 @@
 stranding_data <- read_excel("/Users/ebell23/Downloads/1996-2022_Stranding_working_data.xlsx")
 
-###----Organizing Months into correct format and order
-#Putting Months as a factor and changing labels 
+#Organizing Months into correct format and order----
+##Putting Months as a factor and changing labels 
 stranding_data$Month_of_Observation = factor(stranding_data$Month_of_Observation, levels=c("JAN", "FEB", "MAR", "APR","MAY",
                                                                                            "JUN", "JUL", "AUG","SEP", "OCT","NOV", "DEC"),
                                              labels =c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep",
@@ -16,7 +16,7 @@ stranding_data <- stranding_data %>%
   ))
 #--------------------------------------------------------------------------------------
   -------------------------------------------------------------------------------------
-###---Graphing Specific Year & State by Observation Month
+#Graphing Specific Year & State by Observation Month----
 
 #. Grouping the data together
 maine_species_2018 <- stranding_data %>%

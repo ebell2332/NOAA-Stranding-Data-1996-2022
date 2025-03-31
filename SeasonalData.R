@@ -1,5 +1,6 @@
 stranding_data <- read_excel("/Users/ebell23/Downloads/1996-2022_Stranding_working_data.xlsx")
 
+# Grouping Stranding Data by Seasons----
 stranding_data <- stranding_data %>%
   mutate(Seasons = case_when(
     Month_of_Observation %in% c("MAR", "APR", "MAY") ~ "Spring",
@@ -7,13 +8,14 @@ stranding_data <- stranding_data %>%
     Month_of_Observation %in% c("SEP", "OCT", "NOV") ~ "Fall",
     Month_of_Observation %in% c("DEC", "JAN", "FEB") ~ "Winter"
   ))
-
+# Grouping Stranding Data by Species----
 stranding_data <- stranding_data %>%
   mutate(Group_species = case_when(
     Species %in% c("acutorostrata", "ampullatus", "attenuata", "bidens", "borealis", "breviceps", "cavirostris", "crassidens", "densirostris", "electra", "europaeus", "glacialis", "macrocephalus", "macrorhynchus", "melas", "musculus", "novaenagliae", "physalus", "sima", "acutus", "albirostris", "bredanensis", "capensis", "clymene", "coeruleoalba","crugiger", "delphis", "frontalis", "griseus", "truncatus","phocoena") ~ "Cetaceans",
     Species %in% c("barbatus", "cristata", "groenlandica", "grypus", "hispida", "vitulina") ~ "Pinnipeds",
     TRUE ~ "Unidentified"
   ))
+
 #---------------Seasonal Trends---------------
 ----------------------------------------------
 

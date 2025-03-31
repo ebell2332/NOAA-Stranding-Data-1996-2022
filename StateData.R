@@ -24,7 +24,7 @@ grouped_trends <- stranding_data %>%
 
 print(grouped_trends)
 
-##Stranding Groups by State-- Plotted each by species (not a fan of this graph)
+##Stranding Groups by State-- Plotted each by species (not a fan of this graph) ----
 ggplot(grouped_trends, aes(x = Year_of_Observation, y = Count, color = State, group = State)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2) +
@@ -91,7 +91,7 @@ state_strandings_top5
 #ggsave(filename = "Top5_State_Strandings-bar.png", plot = state_strandings_top5, width = 5, height=4, units = "in", dpi=300)
 
 
-# Top 5 States with Strandings by Group--side by side bar
+# Top 5 States with Strandings by Group--side by side bar----
 species_by_state <- top_states_data %>%
   group_by(State, Group_species) %>%
   summarise(Count = n(), .groups = "drop")

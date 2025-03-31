@@ -35,7 +35,7 @@ library(kableExtra)
 kable(annual_strandings_wide, caption = "Annual Strandings by Species Group") %>%
     kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
-#. ** Stranding by Year
+#. ** Stranding by Year----
 trend_plot <- ggplot(stranding_data, aes(x = Year_of_Observation)) +
   geom_bar(fill = "steelblue") +
   labs(title = "Strandings by year", 
