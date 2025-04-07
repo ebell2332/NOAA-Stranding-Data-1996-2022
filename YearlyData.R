@@ -65,6 +65,28 @@ yearly_group_trends
 
 #ggsave("yearlytrend_by_group-lineplot.png", plot = yearly_group_trends, width = 5, height=4, units = "in", dpi=300)
 
+  ##. Species x Group x Year Table----
+#** Strandings per year by each species group
+yearly_trends <- stranding_data %>%
+  group_by(Year_of_Observation, Group_species ) %>%
+  summarise(Count = n(), .groups = "drop")
+
+#Filter for Cetaceans Species Group
+cetaceans_strandings <- yearly_trends %>% filter(Group_species=="Cetaceans")
+
+# Annual Strandings by Cetaceans Species Group Table
+kable(cetaceans_strandings, caption = "Annual Strandings by Cetaceans Species Group") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+#Filter for Pinnipeds
+pinnipeds_strandings <- yearly_trends %>% filter(Group_species=="Pinnipeds")
+
+# Annual Strandings by Cetaceans Species Group Table
+kable(pinnipeds_strandings, caption = "Annual Strandings by Pinnipeds Species Group") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+
+
 # --------------------------------------------Yearly Trend By State-------------------------
 -------------------------------------------------------------------------------------
 #.--Yearly State Trend
