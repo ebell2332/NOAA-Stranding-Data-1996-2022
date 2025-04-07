@@ -106,3 +106,24 @@ state_strandings_2 <- ggplot(species_by_state, aes(x = State, y = Count, fill = 
 state_strandings_2
 
 #ggsave(filename = "Top5_State_Strandings-sidebar.png", plot = state_strandings_2, width = 5, height=4, units = "in", dpi=300)
+
+
+# Top 5 Bodies of Water----
+body_water <- stranding_data %>%
+  group_by(Body_of_Water) %>%
+  summarise(Count = n(), .groups = "drop")
+
+top_waters <- body_water %>% 
+  top_n(5, wt = Count)
+
+
+library(colorspace)
+
+body_water_plot <- ggplot(top_waters, aes(x = Body_of_Water, y = Count)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Bodies of Water with the Most Strandings",
+       x = "Body of Water",
+       y = "Number of Strandings") +
+  theme_minimal()
+body_water_plot
+
