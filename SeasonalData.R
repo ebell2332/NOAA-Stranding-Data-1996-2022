@@ -3,11 +3,15 @@ stranding_data <- read_excel("/Users/ebell23/Downloads/1996-2022_Stranding_worki
 # Grouping Stranding Data by Seasons----
 stranding_data <- stranding_data %>%
   mutate(Seasons = case_when(
-    Month_of_Observation %in% c("MAR", "APR", "MAY") ~ "Spring",
-    Month_of_Observation %in% c("JUN", "JUL", "AUG") ~ "Summer",
-    Month_of_Observation %in% c("SEP", "OCT", "NOV") ~ "Fall",
-    Month_of_Observation %in% c("DEC", "JAN", "FEB") ~ "Winter"
+    Month_of_Observation %in% c("Mar", "Apr", "May") ~ "Spring",
+    Month_of_Observation %in% c("Jun", "Jul", "Aug") ~ "Summer",
+    Month_of_Observation %in% c("Sep", "Oct", "Nov") ~ "Fall",
+    Month_of_Observation %in% c("Dec", "Jan", "Feb") ~ "Winter"
   ))
+
+season_order <- c("Spring", "Summer", "Fall", "Winter")
+stranding_data$Seasons <- factor(stranding_data$Seasons, levels = season_order)
+
 # Grouping Stranding Data by Species----
 stranding_data <- stranding_data %>%
   mutate(Group_species = case_when(
@@ -18,7 +22,6 @@ stranding_data <- stranding_data %>%
 
 #---------------Seasonal Trends---------------
 ----------------------------------------------
-
   ##-Grouping Species
 group_species_counts <- stranding_data %>%
   group_by(Group_species) %>%
@@ -28,7 +31,8 @@ group_species_counts <- stranding_data %>%
 ##-Grouping Species and Seasons together
 seasonal_species_counts <- stranding_data %>%
   group_by(Group_species, Seasons) %>%
-  summarise(Count = n(), .groups = "drop")
+  summarise(Count = n(), .groups = "drop") %>%
+  complete(Group_species, Seasons, fill = list(Count = 0))
 seasonal_species_counts
 
 ##. Bar Chart-SpeciesxSeasonsxCount
