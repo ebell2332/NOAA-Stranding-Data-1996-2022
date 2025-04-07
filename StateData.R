@@ -109,7 +109,8 @@ state_strandings_2
 
 
 # Top 5 Bodies of Water----
-body_water <- stranding_data %>%
+
+body_water <- stranding_data %>%      #need to group atlantic ocean, and atlantic together
   group_by(Body_of_Water) %>%
   summarise(Count = n(), .groups = "drop")
 
