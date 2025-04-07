@@ -97,7 +97,87 @@ group_name
 #ggsave("SpeciesGroup_name-barchart.png", plot = group_name, width = 7, height=6, units = "in", dpi=300)
 
 
+
+
+#. Charting top 5 species for Each Species Group----
+stranding_data <- stranding_data %>%
+  mutate(Group_species = case_when(
+    Species %in% c("acutorostrata", "ampullatus", "attenuata", "bidens", "borealis", "breviceps", "cavirostris", "crassidens", "densirostris", "electra", "europaeus", "glacialis", "macrocephalus", "macrorhynchus", "melas", "musculus", "novaenagliae", "physalus", "sima", "acutus", "albirostris", "bredanensis", "capensis", "clymene", "coeruleoalba","crugiger", "delphis", "frontalis", "griseus", "truncatus","phocoena") ~ "Cetaceans",
+    Species %in% c("barbatus", "cristata", "groenlandica", "grypus", "hispida", "vitulina") ~ "Pinnipeds",
+    TRUE ~ "Unidentified"
+  ))
+
+species_counts2 <- stranding_data %>%
+  filter(Group_species != "Unidentified") %>%   #exclude unidentified species
+  group_by(Group_species, Species) %>%
+  summarise(Count = n(), .group = "drop") %>%
+  arrange(Group_species, desc(Count))
+
+
+# Top 5 species per group
+top_species <- species_counts2 %>%
+  group_by(Group_species) %>%
+  slice_max(Count, n = 5) %>%
+  ungroup()
+
+print(top_species)
+
+ggplot(top_species, aes(x = reorder(Species, Count), y = Count, fill = Group_species)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Group_species, scales = "free") +
+  coord_flip() +
+  labs(title = "Top 5 Species per Group",
+       x = "Species",
+       y = "Count") +
+  theme_minimal()
+
+#
+
 #. Box Plot--By Species Group
+
+
+
+#. Top 5 Species & Common Names----
+
+  # Combine Genus and Species into one scientific name
+stranding_data_gs <- stranding_data %>%
+  mutate(Scientific_Name = paste(Genus, Species))
+
+  # Count occurrences
+top_sci <- stranding_data_gs %>%
+  group_by(Scientific_Name) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  arrange(desc(Count)) %>%
+  slice_head(n = 5)
+
+  # Bar Plot
+bar_plot_gs_top5 <- ggplot(top_sci, aes(x = reorder(Scientific_Name, Count), y = Count, fill = Scientific_Name)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top 5 Stranded Species (Scientific Names)",
+       x = "Scientific Name",
+       y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+#ggsave("Top5_Total_Species-piechart.png", plot = bar_plot_gs_top5, width=5, height=4, units="in", dpi=300)
+
+    # Grouping Common Names
+top_common <- stranding_data %>%  
+  group_by(Common_Name) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  arrange(desc(Count)) %>%
+  slice_head(n = 5)
+  
+#Bar Chart
+ggplot(top_common, aes(x = reorder(Common_Name, Count), y = Count, fill = Common_Name)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top 5 Most Frequent Species (Common Names)",
+       x = "Common Name",
+       y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none")
 
 
 # ---------------------------------------Species Group Age Class and Sex ----------------------------
