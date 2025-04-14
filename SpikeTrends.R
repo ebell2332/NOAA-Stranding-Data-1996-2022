@@ -58,9 +58,9 @@ spike_years <- summary_data %>%
 View(spike_years)
 
 # Plot strandings by year and state----
-ggplot(summary_data, aes(x = Year_of_Observation, y = count_strandings, color = State)) +
+spike_stateyr_plot <- ggplot(summary_data, aes(x = Year_of_Observation, y = count_strandings, color = State)) +
   geom_line() + 
   geom_point(data = spike_years, aes(x = Year_of_Observation, y = count_strandings), color = "red") + 
   labs(title = "Strandings by Year and State", y = "Total Strandings", x = "Year")
 
-
+#ggsave(filename = "State Spike Trends Plot.png", plot = spike_stateyr_plot, width = 7, height = 4, units = "in", dpi = 300)

@@ -1,5 +1,11 @@
 stranding_data <- read_excel("/Users/ebell23/Downloads/1996-2022_Stranding_working_data.xlsx")
 
+#install.packages("knitr")
+library(knitr)
+#install.packages("kableExtra")
+library(kableExtra)
+#install.packages("gt")
+#library(gt)
 # ------------------------------Yearly Trends-------------------------------
 ----------------------------------------------------------
   
@@ -12,7 +18,7 @@ stranding_data <- stranding_data %>%
       TRUE ~ "Unidentified"
     ))  
   
-  # Summarize annual strandings by species group
+  # Summarize annual strandings by species group19
   annual_strandings <- stranding_data %>%
     group_by(Year_of_Observation, Group_species) %>%
     summarise(Total_Strandings = n(), .groups = "drop")
@@ -20,13 +26,7 @@ stranding_data <- stranding_data %>%
 #.--View Summary table
 print(annual_strandings)
   
-   
-#install.packages("knitr")
-library(knitr)
-#install.packages("kableExtra")
-library(kableExtra)
-#install.packages("gt")
-#library(gt)
+
   
 #Pivot Summary Table to make Year x Species Group Table
   annual_strandings_wide <- annual_strandings %>%
@@ -65,7 +65,7 @@ yearly_group_trends
 
 #ggsave("yearlytrend_by_group-lineplot.png", plot = yearly_group_trends, width = 5, height=4, units = "in", dpi=300)
 
-  ##. Species x Group x Year Table----
+  ##. Species x Group x Year Table----Still need to export both as tables 
 #** Strandings per year by each species group
 yearly_trends <- stranding_data %>%
   group_by(Year_of_Observation, Group_species ) %>%
