@@ -139,6 +139,37 @@ obyear_pinn_boxplot <- ggplot(pinniped_data, aes(x = Species, y = Year_of_Observ
 obyear_pinn_boxplot
 
 
+#. Cetacean Line Plot Seasons x Year of Observation----
+
+strandings_by_season <- cetacean_data %>%
+  filter(!is.na(Year_of_Observation), !is.na(Seasons)) %>%
+  group_by(Year_of_Observation, Seasons) %>%
+  summarise(Stranding_Count = n(), .groups = "drop")
+
+
+ggplot(strandings_by_season, aes(x = Year_of_Observation, y = Stranding_Count, color = Seasons, group = Seasons)) +
+  geom_line(size = 1.2) +
+  geom_point() +
+  labs(title = "Cetacean Strandings Over Time by Season",
+       x = "Year", y = "Stranding Count") +
+  theme_minimal()
+
+#. Pinniped Line Ploe Seasons x Year of Observation----
+
+strandings_by_season <- pinniped_data %>%
+  filter(!is.na(Year_of_Observation), !is.na(Seasons)) %>%
+  group_by(Year_of_Observation, Seasons) %>%
+  summarise(Stranding_Count = n(), .groups = "drop")
+
+
+ggplot(strandings_by_season, aes(x = Year_of_Observation, y = Stranding_Count, color = Seasons, group = Seasons)) +
+  geom_line(size = 1.2) +
+  geom_point() +
+  labs(title = "Pinniped Strandings Over Time by Season",
+       x = "Year", y = "Stranding Count") +
+  theme_minimal()
+
+summary(strandings_by_season)
 
 
 
@@ -154,11 +185,3 @@ obyear_pinn_boxplot
 
 
 
-
-
-
-
-
-
-
-#Plots saved already
