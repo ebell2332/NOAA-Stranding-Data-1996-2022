@@ -154,7 +154,7 @@ ggplot(strandings_by_season, aes(x = Year_of_Observation, y = Stranding_Count, c
        x = "Year", y = "Stranding Count") +
   theme_minimal()
 
-#. Pinniped Line Ploe Seasons x Year of Observation----
+#. Pinniped Line Plot Seasons x Year of Observation----
 
 strandings_by_season <- pinniped_data %>%
   filter(!is.na(Year_of_Observation), !is.na(Seasons)) %>%
@@ -174,14 +174,39 @@ summary(strandings_by_season)
 
 
 
+#. Cetacean UME Per Year----
+#-- Count rows where "UME", "Unusual Mortality Event" appears in the "GE_Type(s)_GE_Module" column
+ume_count <- sum(grepl("UME|Unusual Mortality Event", cetacean_data$`GE_Type(s)_GE_Module`, ignore.case = TRUE))
 
 
+event_counts <- as.data.frame(table(cetacean_data$Event_Type))
 
 
+cet_ume_data <- cetacean_data %>% filter(Event_Type == "UME")
+
+cet_ume_by_year <- cet_ume_data %>%
+  group_by(Year_of_Observation) %>%
+  summarise(UME_Count = n(), .groups = "drop")
+
+ggplot(cet_ume_by_year, aes(x = Year_of_Observation, y = UME_Count)) +
+  geom_col(fill = "firebrick") +
+  labs(title = "Cetacean Unusual Mortality Events by Year",
+       x = "Year", y = "Number of UMEs") +
+  theme_minimal()
 
 
+#. Pinniped UME Per Year----
 
+pin_ume_count <- sum(grepl("UME|Unusual Mortality Event", pinniped_data$`GE_Type(s)_GE_Module`, ignore.case = TRUE))
 
+pin_ume_data <- pinniped_data %>% filter(Event_Type == "UME")
 
+pin_ume_by_year <- pin_ume_data %>%
+  group_by(Year_of_Observation) %>%
+  summarise(UME_Count = n(), .groups = "drop")
 
-
+ggplot(pin_ume_by_year, aes(x = Year_of_Observation, y = UME_Count)) +
+  geom_col(fill = "firebrick") +
+  labs(title = "Pinniped Unusual Mortality Events by Year",
+       x = "Year", y = "Number of UMEs") +
+  theme_minimal()
