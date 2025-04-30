@@ -252,13 +252,13 @@ cet_pin_year
 
 
 
-
+##. Boxplot Strandings By Species Group
 
 ggplot(combined_counts, aes(x = Group, y = Count, fill = Group)) +
   geom_boxplot() +
   scale_fill_manual(values = c("Cetaceans" = "salmon", "Pinnipeds" = "palegreen4")) +
-  labs(title = "Distribution of Annual Strandings by Species Group",
-       x = "Species Group", y = "Annual Stranding Count") +
+  labs(title = "Distribution of Strandings by Species Group",
+       x = "Species Group", y = "Stranding Count") +
   theme_minimal() +
   theme(
     axis.text = element_text(size = 14),
@@ -266,6 +266,31 @@ ggplot(combined_counts, aes(x = Group, y = Count, fill = Group)) +
     plot.title = element_text(size = 18)
   )
 
+
+
+
+
+
+#Boxplot of Species Group by Count with Jitter Points----
+statz_ggplot <- theme(legend.position=c("none")) +
+  theme(axis.text.x=element_text(size=14,color="gray30")) +
+  theme(axis.text.y=element_text(size=14,color="gray30")) +
+  theme(axis.title.x=element_text(size=16)) +
+  theme(axis.title.y=element_text(size=16)) +
+  theme(plot.title=element_text(size=18)) +
+  theme(strip.text.x = element_text(size = 16, colour = "black"))
+
+wes_darj <- c("#FF0000", "#00A08A","#F2AD00","#F98400","#5BBCD6","#ECCBAE","#046C9A","#D69C4E","#ABDDDE")
+
+
+
+ggplot(combined_counts, aes(x = Group, y = Count)) +
+  geom_boxplot(aes(fill=Group),notch=FALSE,outlier.shape=NA) +
+  geom_jitter(aes(colour=Group), position=position_jitter(0.25), size=2.5) +
+  ggtitle(paste("Strandings by Species Group")) +
+  scale_fill_manual(values=wes_darj) +
+  scale_color_brewer(palette="Dark2") +
+  statz_ggplot
 
 
 
