@@ -37,10 +37,18 @@ seasonal_species_counts
 
 ##. Bar Chart-SpeciesxSeasonsxCount
 seasons_plot <- ggplot(seasonal_species_counts, aes(x = Seasons, y = Count, fill = Group_species)) +
-  geom_col(position = "dodge") +      #Separate bar for each species group
-  labs(title = "Number of Strandings Per Species Each Season", x = "Season", y = "Number of Strandings", fill = "Species Group") +
-  theme_minimal()
+  geom_bar(stat = "identity", position = "stack") +      #Separate bar for each species group
+  labs(title = "Seasonal Trend in Strandings Per Species Group", x = "Season", y = "Number of Strandings", fill = "Species Group") +
+  theme_minimal() +
+  theme(legend.position=c("right")) +
+  theme(axis.text.x=element_text(size=14,color="black")) +
+  theme(axis.text.y=element_text(size=14,color="black")) +
+  theme(axis.title.x=element_text(size=16)) +
+  theme(axis.title.y=element_text(size=16)) +
+  theme(plot.title=element_text(size=18))
 seasons_plot
+
+
 
 ##. Line Chart-SpeciesxSeasonsxCount
 seasons_plot1 <- ggplot(seasonal_species_counts, aes(x = Seasons, y = Count, color = Group_species, group = Group_species)) +
