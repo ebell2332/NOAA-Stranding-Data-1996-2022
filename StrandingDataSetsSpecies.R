@@ -210,3 +210,43 @@ ggplot(pin_ume_by_year, aes(x = Year_of_Observation, y = UME_Count)) +
   labs(title = "Pinniped Unusual Mortality Events by Year",
        x = "Year", y = "Number of UMEs") +
   theme_minimal()
+
+
+#. Combined Yearly Line Chart with Year x Strandings for Pinnipeds and Cetaceans----
+
+##. Cetacean Count grouping
+cet_annual_strandings <- cetacean_data %>%
+  group_by(Year_of_Observation) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  mutate(Group = "Cetaceans")
+cet_annual_strandings
+
+##. Pinniped Count grouping
+pin_annual_strandings <- pinniped_data %>%
+  group_by(Year_of_Observation) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  mutate(Group = "Pinnipeds")
+pin_annual_strandings
+
+##. Combine the 2 summaries
+combined_counts <- bind_rows(cet_annual_strandings, pin_annual_strandings)
+head(combined_counts)
+
+#Line graph
+cet_pin_year <- ggplot(combined_counts, aes(x = Year_of_Observation, y = Count, color = Group)) +
+  geom_line(size = 1.2) +
+  geom_point() +
+  labs(title = "Annual Strandings of Cetaceans and Pinnipeds",
+       x = "Year", y = "Number of Strandings", color = "Species Group") +
+  scale_color_manual(values = c("Cetaceans" = "salmon", "Pinnipeds" = "palegreen4")) +
+  theme_minimal() +
+  theme(
+  theme(legend.position=c("right")) +
+  theme(axis.text.x=element_text(size=16,color="black")),
+  theme(axis.text.y=element_text(size=16,color="black")),
+  theme(axis.title.x=element_text(size=18)),
+  theme(axis.title.y=element_text(size=18)),
+  theme(plot.title=element_text(size=18)) 
+  )
+cet_pin_year
+
