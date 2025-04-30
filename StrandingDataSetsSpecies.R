@@ -250,3 +250,22 @@ cet_pin_year <- ggplot(combined_counts, aes(x = Year_of_Observation, y = Count, 
   )
 cet_pin_year
 
+
+
+
+
+ggplot(combined_counts, aes(x = Group, y = Count, fill = Group)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("Cetaceans" = "salmon", "Pinnipeds" = "palegreen4")) +
+  labs(title = "Distribution of Annual Strandings by Species Group",
+       x = "Species Group", y = "Annual Stranding Count") +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 16),
+    plot.title = element_text(size = 18)
+  )
+
+
+
+
