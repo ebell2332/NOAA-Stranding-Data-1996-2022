@@ -128,3 +128,53 @@ body_water_plot <- ggplot(top_waters, aes(x = Body_of_Water, y = Count)) +
   theme_minimal()
 body_water_plot
 
+
+
+#. Boxplot of Annual Strandings by State ----
+
+library(ggplot2)
+
+ggplot(state_trends, aes(x = State, y = Count)) +
+  geom_boxplot(fill = "lightblue") +
+  labs(title = "Distribution of Annual Strandings by State",
+       x = "State", y = "Annual Stranding Count") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+    axis.title = element_text(size = 14),
+    plot.title = element_text(size = 16)
+  )
+
+
+#. Boxplot top 10 states by annual strandings
+top_states <- stranding_data %>%
+  count(State) %>%
+  top_n(10, n) %>%
+  pull(State)
+
+filtered_data <- state_trends %>%
+  filter(State %in% top_states)
+
+ggplot(filtered_data, aes(x = State, y = Count)) +
+  geom_boxplot(fill = "lightblue") +
+  labs(title = "Annual Strandings by Top 10 States",
+       x = "State", y = "Annual Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#. Boxplot Top 5 States by Annual Strandings
+top_states <- stranding_data %>%
+  count(State) %>%
+  top_n(5, n) %>%
+  pull(State)
+
+filtered_data <- state_trends %>%
+  filter(State %in% top_states)
+
+ggplot(filtered_data, aes(x = State, y = Count)) +
+  geom_boxplot(fill = "skyblue3") +
+  labs(title = "Annual Strandings by Top 5 States",
+       x = "State", y = "Annual Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
