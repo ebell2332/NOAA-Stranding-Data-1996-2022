@@ -59,11 +59,14 @@ hist(clean$lon) # this looks more like it
 min(clean$lon)
 max(clean$lon)
 
+summary(clean$lat)  #check to make sure the cleaning worked
+summary(clean$lon)  #check to make sure cleaning worked
+
 ################################################################################
 # so if you choose to ignore all the problematic formatted lat/lon coordinates 
 # you still have 25,943 valid coordinates with clean lat lon formats without needing to do much work
 # you could write out the clean df and use that for your analysis 
-clean <- data %>%
+clean <- clean %>%
   mutate(Group_species = case_when(
     species %in% c("acutorostrata", "ampullatus", "attenuata", "bidens", "borealis", "breviceps", "cavirostris", "crassidens", "densirostris", "electra", "europaeus", "glacialis", "macrocephalus", "macrorhynchus", "melas", "musculus", "novaenagliae", "physalus", "sima", "acutus", "albirostris", "bredanensis", "capensis", "clymene", "coeruleoalba","crugiger", "delphis", "frontalis", "griseus", "truncatus","phocoena") ~ "Cetaceans",
     species %in% c("barbatus", "cristata", "groenlandica", "grypus", "hispida", "vitulina") ~ "Pinnipeds",
@@ -78,25 +81,95 @@ east_coast_states = tolower(c("Maine", "New Hampshire", "Vermont", "Massachusett
 east_coast_map = us_states %>%
   filter(region %in% east_coast_states)
 
+#calculating centroids and adding state abbreviations
+state_centroids <- east_coast_map %>%
+  group_by(region) %>%
+  summarise(
+    long = mean(range(long)),
+    lat = mean(range(lat))
+  ) %>% 
+  mutate( 
+    state_name = tools::toTitleCase(region),
+abbr = state.abb[match(state_name, state.name)]
+) #state abbreviation
 
-# Plot
+# Plot East Coast Map By itsself
+ggplot() +
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = "gray85", color = "black") +
+  geom_text(data = state_centroids, aes(x = long, y = lat, label = abbr),
+            size = 3, fontface = "bold") +
+  coord_fixed(1.3) +
+  theme_minimal() +
+  labs(title = "US East Coast Map with State Abbreviations")
+
+
+
+
+
+#Mapping Observations on East Coast by Group Species
 ggplot(east_coast_map, aes(x = long, y = lat, group = group)) +
   geom_polygon(fill = "gray", color = "black") +
   coord_fixed(1.3) +
-  geom_point(data = clean, aes(x = lon, y = lat, group = species, color= species), size = 2) +
+  geom_point(data = clean, aes(x = clean$lon, y = clean$lat, group = species, color = species), size = 2) +
   theme_minimal() +
   labs(title = "US East Coast States from Maine to Virginia")
 
 
-#. Plot Not running when Group_Species is added
+
+#. Mapping Observations on East Coast by Group Species
 ggplot(east_coast_map, aes(x = long, y = lat)) +
   geom_polygon(aes(group = group), fill = "gray90", color = "black") +
   coord_fixed(1.3) +
   geom_point(data = clean, aes(x = lon, y = lat, color = Group_species), size = 2) +
   scale_color_brewer(palette = "Dark2") +
   theme_minimal() +
-  labs(title = "Marine Mammal Observations on the US East Coast",
-       color = "Species Group")
+  labs(
+    title = "Marine Mammal Observations on the US East Coast",
+    color = "Species Group"
+  )
+
+# Mapping Only Cetcean Observations
+#--Filter cetaceans
+cetaceans_only <- clean %>%
+  filter(Group_species == "Cetaceans")
+
+#--Plot with color by Cet. species
+ggplot(east_coast_map, aes(x = long, y = lat)) +
+  geom_polygon(aes(group = group), fill = "gray90", color = "black") +
+  coord_fixed(1.3) +
+  geom_point(
+    data = cetaceans_only,
+    aes(x = lon, y = lat, color = species),
+    size = 2
+  ) +
+  scale_color_brewer(palette = "Dark2") +
+  theme_minimal() +
+  labs(
+    title = "Cetacean Strandings by Species on the US East Coast",
+    color = "Species"
+  )
+
+#Mapping only Pinniped Observations
+#--Filter Pinnipeds
+pinnipeds_only <- clean %>%
+  filter(Group_species == "Pinnipeds")
+
+#--Plot with color by Pinn. species
+ggplot(east_coast_map, aes(x = long, y = lat)) +
+  geom_polygon(aes(group = group), fill = "gray90", color = "black") +
+  coord_fixed(1.3) +
+  geom_point(
+    data = pinnipeds_only,
+    aes(x = lon, y = lat, color = species),
+    size = 2
+  ) +
+  scale_color_brewer(palette = "Dark2") +
+  theme_minimal() +
+  labs(
+    title = "Pinnipeds Strandings by Species on the US East Coast",
+    color = "Species"
+  )
 
 
 
