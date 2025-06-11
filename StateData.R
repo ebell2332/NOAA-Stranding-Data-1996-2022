@@ -1,16 +1,16 @@
-stranding_data <- read_excel("/Users/ebell23/Downloads/1996-2022_Stranding_working_data.xlsx")
+
 
 # --------------------------------------State Trends-----------------------------
 ------------------------------------------------------------------
 
 ##.-- Number of Strandings by State
-state_trends <- stranding_data %>%
-    group_by(Year_of_Observation, State) %>%
+state_trends <- final_clean %>%
+    group_by(year_of_observation, state) %>%
     summarise(Count = n(), .groups = "drop")
   head(state_trends)
 
   #. Bar Chart- Strandings by State  
-  state_strandings <- ggplot(state_trends, aes(x = State, y = Count, fill = State)) +
+  state_strandings <- ggplot(state_trends, aes(x = state, y = Count, fill = state)) +
   geom_col() +
   labs(title = "Total Strandings by State", x = "State", y = "Total Strandings") +
   theme_minimal() +
@@ -177,4 +177,50 @@ ggplot(filtered_data, aes(x = State, y = Count)) +
        x = "State", y = "Annual Count") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+
+################
+#Plotting Maine and Massachusetts separately from total strandings
+#both are much higher in total number than all the other states
+
+#maine line plot
+#2006, 2007, 2018 have highest numbers
+maine_only <- final_clean %>%
+  filter(state == "ME")
+
+ggplot(maine_only, aes(x = year_of_observation)) +
+  geom_bar(fill = "darkgreen") +
+  theme_minimal() +
+  labs(title = "Marine Mammal Strandings in Maine by Year",
+       x = "Year", y = "Count")
+
+#massachusetts line plot
+#2017-2019 has highest numbers
+ma_only <- final_clean %>%
+  filter(state == "MA")
+
+ggplot(ma_only, aes(x = year_of_observation)) +
+  geom_bar(fill = "darkgreen") +
+  theme_minimal() +
+  labs(title = "Marine Mammal Strandings in Massachusetts by Year",
+       x = "Year", y = "Count")
+
+
+#plotting all states excluding maine and massachussets
+#2013, 2018-2019 have highest numbers
+filtered_states <- final_clean %>%
+  filter(!(state %in% c("MA", "ME"))) %>%
+  filter(!is.na(year_of_observation))
+
+ggplot(filtered_states, aes(x = factor(year_of_observation))) +
+    geom_bar(fill = "darkgreen") +
+    theme_minimal() +
+    labs(
+      title = "Marine Mammal Strandings by Year (Excluding Maine & Massachusetts)",
+      x = "Year",
+      y = "Number of Strandings"
+    )
+  
 
