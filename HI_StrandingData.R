@@ -1,18 +1,33 @@
-stranding_data <- read_excel("/Users/ebell23/Downloads/1996-2022_Stranding_working_data.xlsx")
+#stranding_data <- read_excel("/Users/ebell23/Downloads/1996-2022_Stranding_working_data.xlsx")
 
 # -------------------------------Human Interaction --------------------
 -------------------------------------------------------------------
   #. **Findings of Human Interactions
 
 #Adding Interaction Type into dataset by combining columns  
-  all_strandings <- stranding_data %>%       #add Interaction Type
-    select(`Shot`, `Boat_Collision`, `Fishery_Interaction`, `Other_Human_Interaction`) %>%
-    pivot_longer(cols = everything(), names_to = "Interaction_Type", values_to = "Findings_of_Human_Interaction") %>%
+  hi_data <- final_clean %>%
+    select(shot, boat_collision, fishery_interaction, other_human_interaction) %>%
+    pivot_longer(
+      cols = everything(),
+      names_to = "Interaction_Type",
+      values_to = "Findings_of_Human_Interaction"
+    ) %>%
     filter(!is.na(Findings_of_Human_Interaction)) %>%
     group_by(Interaction_Type, Findings_of_Human_Interaction) %>%
     summarise(Count = n(), .groups = "drop")
   
-  unique(all_strandings$Interaction_Type)
+  HI_graph <- ggplot(data = hi_data, aes(x = Findings_of_Human_Interaction, y = Count, fill = Interaction_Type)) +
+    geom_col(alpha = 0.4) +
+    ggtitle("Findings of Human Interaction from 1996–2022") +
+    labs(x = "Findings of Human Interaction", y = "# of Strandings") +
+    theme(legend.position = "right",
+          axis.text.x = element_text(size = 14, color = "gray30"),
+          axis.text.y = element_text(size = 14, color = "gray30"),
+          axis.title.x = element_text(size = 16),
+          axis.title.y = element_text(size = 16),
+          plot.title = element_text(size = 18),
+          strip.text.x = element_text(size = 16, colour = "black"))
+HI_graph  
   
 #. HI vs Non-HI Findings Grouping
 plot_data <- all_strandings %>%
@@ -40,7 +55,7 @@ summary_table <- plot_data %>%
   summary_table
   
 #. Stacked Bar Graph--Types of Human Interactons 
-HI_graph <- ggplot(data = all_strandings, aes(x = Findings_of_Human_Interaction, y = Count, fill = Interaction_Type)) + #simple way to do it
+HI_graph <- ggplot(data = hi_data, aes(x = Findings_of_Human_Interaction, y = Count, fill = Interaction_Type)) + #simple way to do it
     geom_col(alpha = 0.4) +
     ggtitle("Findings of Human Interaction from 1996-2022") +
     labs(x = "Findings of Human Interaction", y = "# of Strandings")  + 
@@ -55,7 +70,7 @@ HI_graph
   #ggsave("PLOT_HI_Findings-histo.png", plot = HI_graph, width=5, height=4, units="in", dpi=300)
   
 #. Bar graph for Types of Human Interaction, separate graphs for each type
-HI_graph1 <- ggplot(data = all_strandings, aes(x = Findings_of_Human_Interaction, y = Count, fill = Interaction_Type)) + #simple way to do it
+HI_graph1 <- ggplot(data = hi_data, aes(x = Findings_of_Human_Interaction, y = Count, fill = Interaction_Type)) + #simple way to do it
     geom_col(alpha = 0.4) +
     ggtitle("Findings of Human Interaction from 1996-2022") +
     labs(x = "Findings of Human Interaction", y = "# of Strandings") +
