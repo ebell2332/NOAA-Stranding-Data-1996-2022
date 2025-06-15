@@ -186,7 +186,7 @@ ggplot(filtered_data, aes(x = State, y = Count)) +
 #both are much higher in total number than all the other states
 
 #maine line plot
-#2006, 2007, 2018 have highest numbers
+#2005, 2006, 2018 have highest numbers
 maine_only <- final_clean %>%
   filter(state == "ME")
 
@@ -223,4 +223,140 @@ ggplot(filtered_states, aes(x = factor(year_of_observation))) +
       y = "Number of Strandings"
     )
   
+################################################################################
+#filtering and plotting group species for the years that had the highest strandings
+
+#Top 5 all species for states excluding MA and ME during high stranding years
+top_5species <- final_clean %>%          
+  filter(year_of_observation %in% c("2013", "2018", "2019")) %>%    #filter by high years
+  filter(!(state %in% c("MA", "ME"))) %>%       #filtering out MA and ME
+  group_by(Group_species, species) %>%
+  summarise(stranding_count = n(), .groups = "drop") %>%
+  slice_max(order_by = stranding_count, n = 5)
+
+ggplot(top_5species, aes(x = reorder(species, -stranding_count), y = stranding_count)) +
+  geom_bar(stat = "identity", fill = "darkgreen") +
+  labs(
+    title = "Strandings for Top 5 Species (2013, 2018, 2019, excluding MA & ME)",
+    x = "Species", y = "Number of Strandings"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#Cetacean strandings for all states (not MA, ME) for the 3 high years
+top_species_yrs <- final_clean %>%          
+  filter(year_of_observation %in% c("2013", "2018", "2019")) %>%    #filter by high years
+  filter(Group_species == "Cetaceans") %>%          #filter by cetaceans
+  filter(!(state %in% c("MA", "ME"))) %>%       #filtering out MA and ME
+  group_by(Group_species, species) %>%
+  summarise(stranding_count = n(), .groups = "drop") %>%
+  arrange(Group_species, desc(stranding_count))
+
+head(top_species_yrs, 1)
+  
+#plotting cetaceans
+ggplot(top_species_yrs, aes(x = reorder(species, -stranding_count), y = stranding_count)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Strandings by Species and Group (2013, 2018, 2019, excluding MA & ME)",
+    x = "Species", y = "Number of Strandings"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#Pinniped strandings for all states (not MA, ME) for the 3 high years
+top_species_yr <- final_clean %>%          
+  filter(year_of_observation %in% c("2013", "2018", "2019")) %>%
+  filter(Group_species == "Pinnipeds") %>%
+  filter(!(state %in% c("MA", "ME"))) %>%
+  group_by(Group_species, species) %>%
+  summarise(stranding_count = n(), .groups = "drop") %>%
+  arrange(Group_species, desc(stranding_count))
+
+head(top_species_yr, 1)
+  #plotting pinnipeds
+ggplot(top_species_yr, aes(x = reorder(species, -stranding_count), y = stranding_count)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Strandings by Species and Group (2013, 2018, 2019, excluding MA & ME)",
+    x = "Species", y = "Number of Strandings"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+#Pinniped MA strandings during high years
+mass_years <- final_clean %>%          
+  filter(year_of_observation %in% c("2017", "2018", "2019")) %>%
+  filter(Group_species == "Pinnipeds") %>%
+  filter(state == "MA") %>%
+  group_by(Group_species, species) %>%
+  summarise(stranding_count = n(), .groups = "drop") %>%
+  arrange(Group_species, desc(stranding_count))
+
+ggplot(mass_years, aes(x = reorder(species, -stranding_count), y = stranding_count)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "MA Pinniped Strandings by Species and Group (2017-2019)",
+    x = "Species", y = "Number of Strandings"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+#Cetacean strandings for MA during high years
+cet_mass_years <- final_clean %>%          
+  filter(year_of_observation %in% c("2017", "2018", "2019")) %>%
+  filter(Group_species == "Cetaceans") %>%
+  filter(state == "MA") %>%
+  group_by(Group_species, species) %>%
+  summarise(stranding_count = n(), .groups = "drop") %>%
+  arrange(Group_species, desc(stranding_count))
+
+ggplot(cet_mass_years, aes(x = reorder(species, -stranding_count), y = stranding_count)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "MA Cetacean Strandings by Species and Group (2017-2019)",
+    x = "Species", y = "Number of Strandings"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+#Top 5 MA species strandings during high years
+mass_years <- final_clean %>%          
+  filter(year_of_observation %in% c("2017", "2018", "2019")) %>%
+  filter(state == "MA") %>%
+  group_by(Group_species, species) %>%
+  summarise(stranding_count = n(), .groups = "drop") %>%
+  slice_max(order_by = stranding_count, n = 5)
+
+ggplot(mass_years, aes(x = reorder(species, -stranding_count), y = stranding_count)) +
+  geom_bar(stat = "identity", fill = "darkgreen") +
+  labs(
+    title = "MA  Strandings by Species and Group (2017-2019)",
+    x = "Species", y = "Number of Strandings"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+
+#Top 5 Maine high years Strandings all species
+maine_years <- final_clean %>%          
+  filter(year_of_observation %in% c("2005", "2006", "2018")) %>%
+  filter(state == "ME") %>%
+  group_by(Group_species, species) %>%
+  summarise(stranding_count = n(), .groups = "drop") %>%
+  slice_max(order_by = stranding_count, n = 5)
+
+ggplot(maine_years, aes(x = reorder(species, -stranding_count), y = stranding_count)) +
+  geom_bar(stat = "identity", fill = "darkgreen") +
+  labs(
+    title = "MA  Strandings by Species and Group (2005, 2006, 2018)",
+    x = "Species", y = "Number of Strandings"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
