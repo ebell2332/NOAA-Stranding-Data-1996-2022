@@ -1,4 +1,4 @@
-#Graph for NARW Take Reduction Plan and Strandings
+#Graph for NARW  and Strandings
 # For example: stranding_data
 
 # Step 1: Filter for the desired genus and species
