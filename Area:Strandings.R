@@ -2,7 +2,7 @@ library(dplyr)
 #install.packages("openxlsx")
 library(openxlsx)
 
-
+#-----------------------Creating Boundaries for Areas 1-3----------------------
 # 1. Define latitude breakpoints (update values as needed)
 #lat breaks boundaries chosen by ferry terminals on the east coast
 lat_breaks <- c(-Inf,40.409, 42.044, Inf)  
@@ -177,7 +177,7 @@ ggplot(combined_data, aes(x = Date, y = Count, fill = Type)) +
 #-----------------------------------Plotting Policies on Map----------------------------------------------------------
 #1. Count Number of Policies in Each Area
 # Read in the Excel file
-df <- read_excel("Stranding_Summary_By_Area.xlsx")
+df <- read_excel("Stranding_Summary_By_Area.xlsx") #update excel sheet and re-run
 
 # Clean column names
 colnames(df) <- trimws(colnames(df))
@@ -189,10 +189,10 @@ policy_totals <- df %>%
   arrange(desc(Total_Policies))
 
 print(policy_totals)
-  #Area 1 = 140
-  #Area 2 = 103
-  #Area = 32
-  #total approx. = 275
+  #Area 1 = 159
+  #Area 2 = 123
+  #Area = 37
+  #total approx. = 319
 
 # Create a policy summary with approximate centroids
 policy_summary <- data.frame(
@@ -201,7 +201,7 @@ policy_summary <- data.frame(
            "Area 3|South of Highlands NJ"),
   lat = c(43.0, 41.25, 39.0),          # approximate central latitudes
   lon = c(-70.0, -72.5, -74.5),        # approximate longitudes per area
-  total_policies = c(140, 103, 32)     # use your calculated totals
+  total_policies = c(159, 123, 37)     # use your calculated totals
 )
 
 # Map with policies adding and boundaries break up
@@ -219,13 +219,13 @@ area_policy_map <- ggplot() +
   geom_hline(yintercept = 41.992, linetype = "dashed", color = "black", size = 1) + #P-town  
   geom_hline(yintercept = 40.288, linetype = "dashed", color = "black", size = 1) + #Highlands, NJ
   theme_minimal() +
-  labs(title = "Strandings and Total Policies by Latitudinal Area", subtitle = "From Maine to Virginia (1996-2022)", 
+  labs(title = "Strandings and Total Policies by Areas 1:3", subtitle = "From Maine to Virginia (1996-2022)", 
        x = "Longitude", y = "Latitude",
        size = "# of Policies") +
   # Add labels at specific coordinates
-  annotate("label", x = -69.0000, y = 44.0000, label = "Area 1|North of Cape Cod", color = "black", size = 3) +
-  annotate("label", x = -69.0000, y = 41.0000, label = "Area 2|Cape Cod to NJ", color = "black", size = 3) +
-  annotate("label", x = -69.0000, y = 39.0000, label = "Area 3|South of Highlands NJ", color = "black", size = 3)
+  annotate("label", x = -69.0000, y = 44.0000, label = "Area 1|North of Cape Cod", color = "black", size = 4.5) +
+  annotate("label", x = -69.0000, y = 41.0000, label = "Area 2|Cape Cod to NJ", color = "black", size = 4.5) +
+  annotate("label", x = -69.0000, y = 39.0000, label = "Area 3|South of Highlands NJ", color = "black", size = 4.5)
 area_policy_map
 
 #---------------------------Line Plot of Area & Policy--------------------------
