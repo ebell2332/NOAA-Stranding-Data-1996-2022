@@ -1,3 +1,4 @@
+#------------------------North Atlantic Right Whales----------------------------
 #Graph for NARW  and Strandings
 filtered_narw <- final_set %>%
   filter(genus == "Eubalaena"& species == "glacialis")  # North atlantic right whales
@@ -53,6 +54,36 @@ narw_graph <- ggplot(yearly_narw, aes(x = year_of_observation, y = Count)) +
   scale_y_continuous(limits = c(0, 8))
   theme_minimal()
 narw_graph  
+
+#Number of NARW Strandings by Areas (per Boundaries)
+final_set <- final_set %>%
+  mutate(
+    Area = case_when(
+      lat >= 42.044 ~ "Area 1|North of Cape Cod",
+      lat >= 40.409 & lat < 42.044 ~ "Area 2|Cape Cod to NJ",
+      lat < 40.409 ~ "Area 3|South of Highlands NJ",
+      TRUE ~ NA_character_
+    )
+  )
+
+final_set %>%
+  filter(
+    genus %in% c("Eubalaena") &
+      species %in% c("glacialis")
+  ) %>%
+  group_by(Area, Year = year_of_observation, genus, species) %>%
+  summarise(Strandings = n(), .groups = "drop") %>%
+  arrange(Area, Year)   #counting my area & year
+
+
+final_set %>%
+  filter(
+    genus %in% c("Eubalaena") &
+      species %in% c("glacialis")
+  ) %>%
+  group_by(Area, genus, species) %>%
+  summarise(Strandings = n(), .groups = "drop") %>%
+  arrange(Area)   #counting my area & year
   
 #----------------------Harbor Porpoise-----------------------------
 #Graphing Number of Harbor Porpoise Strandings by Year
@@ -105,6 +136,36 @@ hp_graph <- ggplot(yearly_hp, aes(x = year_of_observation, y = Count)) +
   theme_minimal()
 hp_graph
 
+#Number of strandings per boundary area
+final_set <- final_set %>%
+  mutate(
+    Area = case_when(
+      lat >= 42.044 ~ "Area 1|North of Cape Cod",
+      lat >= 40.409 & lat < 42.044 ~ "Area 2|Cape Cod to NJ",
+      lat < 40.409 ~ "Area 3|South of Highlands NJ",
+      TRUE ~ NA_character_
+    )
+  )
+
+final_set %>%
+  filter(
+    genus %in% c("Phocoena") &
+      species %in% c("phocoena")
+  ) %>%
+  group_by(Area, Year = year_of_observation, genus, species) %>%
+  summarise(Strandings = n(), .groups = "drop") %>%
+  arrange(Area, Year)   #counting by area
+
+
+final_set %>%
+  filter(
+    genus %in% c("Phocoena") &
+      species %in% c("phocoena")
+  ) %>%
+  group_by(Area, genus, species) %>%
+  summarise(Strandings = n(), .groups = "drop") %>%
+  arrange(Area)   #counting by area
+
   #----------------------Atlantic Large Whales-----------------------------
 #Graphing # of Altantic Large Whale Strandings
 filtered_altrp <- final_set %>%
@@ -136,9 +197,9 @@ ggplot(yearly_altrp, aes(x = year_of_observation, y = Count, fill = scientific_n
 #Line Plot for Atlantic Large Whale Take Reduction Plan
 filtered_altrp <- final_set %>%
   filter(
-    (genus =="Eubalaena"& species == "glacialis") |
-           (genus == "Balaenoptera" & species == "physalus") |
-         (genus == "Megaptera" & species == "novaeangliae")
+    (genus =="Eubalaena"& species == "glacialis") |  #North atlantic right whale
+           (genus == "Balaenoptera" & species == "physalus") |   #fin whale
+         (genus == "Megaptera" & species == "novaeangliae")      #humpback whale
   ) %>%
   filter(!is.na(year_of_observation)) %>%
   mutate(scientific_name = paste(genus, species, sep = " "))
@@ -185,3 +246,37 @@ altrp_graph <- ggplot(yearly_altrp, aes(x = year_of_observation, y = Count, colo
             label = "2015 Amendment to Plan", angle = 0, vjust = -0.5, size = 3) +
   theme_minimal()
 altrp_graph
+
+
+#Number of strandings per boundary area
+final_set <- final_set %>%
+  mutate(
+    Area = case_when(
+      lat >= 42.044 ~ "Area 1|North of Cape Cod",
+      lat >= 40.409 & lat < 42.044 ~ "Area 2|Cape Cod to NJ",
+      lat < 40.409 ~ "Area 3|South of Highlands NJ",
+      TRUE ~ NA_character_
+    )
+  )
+
+final_set %>%
+  filter(
+    genus %in% c("Eubalaena", "Balaenoptera", "Megaptera") &
+      species %in% c("glacialis", "physalus", "novaeangliae")
+  ) %>%
+  group_by(Area, Year = year_of_observation, genus, species) %>%
+  summarise(Strandings = n(), .groups = "drop") %>%
+  arrange(Area, Year)   #counting by area
+
+
+final_set %>%
+  filter(
+    genus %in% c("Eubalaena", "Balaenoptera", "Megaptera") &
+      species %in% c("glacialis", "physalus", "novaeangliae")
+  ) %>%
+  group_by(Area, genus, species) %>%
+  summarise(Strandings = n(), .groups = "drop") %>%
+  arrange(Area)   #counting by area
+
+
+
