@@ -1,9 +1,27 @@
 #Graph for NARW  and Strandings
-# For example: stranding_data
-
-# Step 1: Filter for the desired genus and species
 filtered_narw <- final_set %>%
   filter(genus == "Eubalaena"& species == "glacialis")  # North atlantic right whales
+
+yearly_narw <- filtered_narw %>%
+  group_by(year_of_observation) %>%
+  summarise(Count = n(), .groups = "drop")
+
+ggplot(yearly_narw, aes(x = year_of_observation, y = Count)) +
+  geom_bar(stat = "identity", fill = "skyblue3") +
+  labs(
+    title = "Number of North Atlantic Right Whale Strandings",
+    subtitle = "From 1996-2022",
+    x = "Year of Observation",
+    y = "Number of Strandings"
+  )
+theme_minimal()
+
+print(yearly_narw)
+
+#Plotting NARW strandings and Policy Year Implementation
+# Step 1: Filter for the desired genus and species
+filtered_narw <- final_set %>%
+  filter(genus == "Eubalaena"& species == "glacialis")  # North Atlantic right whales
 
 # Step 2: Count strandings by year
 yearly_narw <- filtered_narw %>%
@@ -37,6 +55,26 @@ narw_graph <- ggplot(yearly_narw, aes(x = year_of_observation, y = Count)) +
 narw_graph  
   
 #----------------------Harbor Porpoise-----------------------------
+#Graphing Number of Harbor Porpoise Strandings by Year
+filtered_hp <- final_set %>%
+  filter(genus == "Phocoena" & species == "phocoena")  # harbor porpoise
+
+yearly_hp <- filtered_hp %>%
+  group_by(year_of_observation) %>%
+  summarise(Count = n(), .groups = "drop")
+
+ggplot(yearly_hp, aes(x = year_of_observation, y = Count)) +
+  geom_bar(stat = "identity", fill = "skyblue3") +
+  labs(
+    title = "Number of Harbor Porpoise Strandings",
+    subtitle = "From 1996-2022",
+    x = "Year of Observation",
+    y = "Number of Strandings"
+  )
+theme_minimal()
+
+print(yearly_hp)
+
 #Line Plot for Harbor Porpoise Take Reduction Plan
 filtered_hp <- final_set %>%
   filter(genus == "Phocoena" & species == "phocoena")  # harbor porpoise
@@ -68,6 +106,33 @@ hp_graph <- ggplot(yearly_hp, aes(x = year_of_observation, y = Count)) +
 hp_graph
 
   #----------------------Atlantic Large Whales-----------------------------
+#Graphing # of Altantic Large Whale Strandings
+filtered_altrp <- final_set %>%
+  filter(
+    (genus =="Eubalaena"& species == "glacialis") |
+      (genus == "Balaenoptera" & species == "physalus") |
+      (genus == "Megaptera" & species == "novaeangliae")
+  ) %>%
+  filter(!is.na(year_of_observation)) %>%
+  mutate(scientific_name = paste(genus, species, sep = " "))
+
+
+yearly_altrp <- filtered_altrp %>%
+  group_by(year_of_observation, scientific_name) %>%
+  summarise(Count = n(), .groups = "drop")
+
+
+ggplot(yearly_altrp, aes(x = year_of_observation, y = Count, fill = scientific_name)) +
+  geom_col() +
+  labs(
+    title = "Number of Atlantic Large Whale Strandings",
+    subtitle = "From 1996-2022",
+    x = "Year of Observation",
+    y = "Number of Strandings",
+    fill = "Scientific Name"
+  )
+  theme_minimal()
+#---                        ---                       ---              ---
 #Line Plot for Atlantic Large Whale Take Reduction Plan
 filtered_altrp <- final_set %>%
   filter(
@@ -94,23 +159,29 @@ altrp_graph <- ggplot(yearly_altrp, aes(x = year_of_observation, y = Count, colo
     y = "Number of Strandings",
     color = "Scientific Name"
   ) +
-  geom_vline(xintercept = 1996, linetype = "dashed", color = "black", linewidth = 1) +
-  annotate( "text", x =  1999, y = max(yearly_altrp$Count) * 0.9, 
-            label = "ALWTRP Implemented", angle = 0, vjust = -0.5, size = 2.5) + 
-  geom_vline(xintercept = 2002, linetype = "dashed", color = "black", linewidth = 1) +
-  annotate( "text", x =  2000, y = max(yearly_altrp$Count) * 0.9, 
-            label = "Seasonal Area Management", angle = 0, vjust = 4, size = 2.5) +
-  geom_vline(xintercept = 2003, linetype = "dashed", color = "black", linewidth = 1) +
-  annotate( "text", x =  2004, y = max(yearly_altrp$Count) * 0.9, 
-            label = "Voluntary 15-Day Closure", angle = 0, vjust = -0.5, size = 2.5) +
-  geom_vline(xintercept = 2007, linetype = "dashed", color = "black", linewidth = 1) +
-  annotate( "text", x =  2009, y = max(yearly_altrp$Count) * 0.9, 
-            label = "2007 Amendment to Plan", angle = 0, vjust = 2, size = 2.5) +
-  geom_vline(xintercept = 2014, linetype = "dashed", color = "black", linewidth = 1) +
-  annotate( "text", x =  2012, y = max(yearly_altrp$Count) * 0.9, 
-            label = "2014 Amendment to Plan", angle = 0, vjust = 4, size = 2.5) +
-  geom_vline(xintercept = 2015, linetype = "dashed", color = "black", linewidth = 1) +
-  annotate( "text", x =  2017, y = max(yearly_altrp$Count) * 0.9, 
-            label = "2014 Amendment to Plan", angle = 0, vjust = -6, size = 2.5) +
+  geom_segment(aes(x = 1997, xend= 1997, y = 0, yend = 33),
+               linetype = "dashed", color = "red", linewidth = 1) +
+  annotate( "text", x =  1998, y = 30, 
+            label = "ALWTRP Implemented", angle = 0, vjust = -0.5, size = 3) +
+  geom_segment(aes(x = 2002, xend= 2002, y = 0, yend = 33),
+               linetype = "dashed", color = "red", linewidth = 1) +
+  annotate( "text", x =  1999, y = 28, 
+            label = "Seasonal Area Management", angle = 0, vjust = -0.5, size = 3) +
+  geom_segment(aes(x = 2003, xend= 2003, y = 0, yend = 33),
+               linetype = "dashed", color = "red", linewidth = 1) +
+  annotate( "text", x =  2005, y = 30, 
+            label = "Voluntary 15-Day Closure(s)", angle = 0, vjust = -0.5, size = 2.5) +
+  geom_segment(aes(x = 2007, xend= 2007, y = 0, yend = 33),
+               linetype = "dashed", color = "red", linewidth = 1) +
+  annotate( "text", x =  2010, y = 30, 
+            label = "2007 Amendment to Plan", angle = 0, vjust = -0.5, size = 3) +
+  geom_segment(aes(x = 2014, xend= 2014, y = 0, yend = 8),
+               linetype = "dashed", color = "red", linewidth = 1) +
+  annotate( "text", x =  2012, y = 28, 
+            label = "2014 Amendment to Plan", angle = 0, vjust = -0.5, size = 3) +
+  geom_segment(aes(x = 2015, xend= 2015, y = 0, yend = 33),
+               linetype = "dashed", color = "red", linewidth = 1) +
+  annotate( "text", x =  2017, y = 33, 
+            label = "2015 Amendment to Plan", angle = 0, vjust = -0.5, size = 3) +
   theme_minimal()
 altrp_graph
