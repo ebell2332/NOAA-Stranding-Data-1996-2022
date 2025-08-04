@@ -219,7 +219,7 @@ area_policy_map <- ggplot() +
   geom_hline(yintercept = 41.992, linetype = "dashed", color = "black", size = 1) + #P-town  
   geom_hline(yintercept = 40.288, linetype = "dashed", color = "black", size = 1) + #Highlands, NJ
   theme_minimal() +
-  labs(title = "Strandings and Total Policies by Areas 1:3", subtitle = "From Maine to Virginia (1996-2022)", 
+  labs(title = "Strandings and Total Policies by Boundary Areas", subtitle = "From Maine to Virginia (1996-2022)", 
        x = "Longitude", y = "Latitude",
        size = "# of Policies") +
   # Add labels at specific coordinates
