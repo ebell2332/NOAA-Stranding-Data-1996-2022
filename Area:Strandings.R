@@ -15,7 +15,7 @@ final_set <- final_set %>%
   mutate(
     Area = cut(lat,
                breaks = lat_breaks,
-               labels = c("Area 1|North of Cape Code", "Area 2|Cape Cod to NJ", "Area 3|South of Highlands NJ"),
+               labels = c("Area 1|North of Cape Cod", "Area 2|Cape Cod to NJ", "Area 3|South of Highlands NJ"),
                right = FALSE)
     )
  # ) %>%
