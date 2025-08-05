@@ -1,5 +1,5 @@
 #------------------------North Atlantic Right Whales----------------------------
-#Graph for NARW  and Strandings
+#1. Graph for NARW  and Strandings
 filtered_narw <- final_set %>%
   filter(genus == "Eubalaena"& species == "glacialis")  # North atlantic right whales
 
@@ -19,7 +19,7 @@ theme_minimal()
 
 print(yearly_narw)
 
-#Plotting NARW strandings and Policy Year Implementation
+#2. Plotting NARW strandings and Policy Year Implementation
 # Step 1: Filter for the desired genus and species
 filtered_narw <- final_set %>%
   filter(genus == "Eubalaena"& species == "glacialis")  # North Atlantic right whales
@@ -55,7 +55,7 @@ narw_graph <- ggplot(yearly_narw, aes(x = year_of_observation, y = Count)) +
   theme_minimal()
 narw_graph  
 
-#Number of NARW Strandings by Areas (per Boundaries)
+#3. ---Number of NARW Strandings by Areas (per Boundaries)---  --- --- ---
 final_set <- final_set %>%
   mutate(
     Area = case_when(
@@ -84,6 +84,40 @@ final_set %>%
   group_by(Area, genus, species) %>%
   summarise(Strandings = n(), .groups = "drop") %>%
   arrange(Area)   #counting my area & year
+
+
+#4. ---Plotting # of Interaction Types for NARW--- --- --- --- -- --- --- --- --
+  # Step 1: Filter and recode interactions for specific species
+interaction_narw <- final_set %>%
+  filter(genus == "Eubalaena", species == "glacialis") %>%
+  mutate(across(
+    c(boat_collision, shot, fishery_interaction, other_human_interaction),
+    ~ ifelse(. == "Y", 1, 0)
+  ))
+
+  # Step 2: Summarize counts and pivot longer
+interaction_summary_narw <- interaction_narw %>%
+  summarise(across(
+    c(boat_collision, shot, fishery_interaction, other_human_interaction),
+    ~ sum(.x, na.rm = TRUE)
+  )) %>%
+  pivot_longer(cols = everything(), names_to = "Interaction_Type", values_to = "Count")
+
+  # Step 3: Plot
+ggplot(interaction_summary_narw, aes(x = Interaction_Type, y = Count, fill = Interaction_Type)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = Count), vjust = -0.5, size = 4) +  # <- this adds the labels
+  theme_minimal() +
+  labs(
+    title = "Human Interaction Types for North Atlantic Right Whales",
+    x = "Interaction Type",
+    y = "Number of Strandings"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    legend.position = "none"
+  )
+
   
 #----------------------Harbor Porpoise-----------------------------
 #Graphing Number of Harbor Porpoise Strandings by Year
@@ -166,8 +200,40 @@ final_set %>%
   summarise(Strandings = n(), .groups = "drop") %>%
   arrange(Area)   #counting by area
 
+#3.Plotting Interaction Types for HP
+interaction_hp <- final_set %>%
+  filter(genus == "Phocoena", species == "phocoena") %>%
+  mutate(across(
+    c(boat_collision, shot, fishery_interaction, other_human_interaction),
+    ~ ifelse(. == "Y", 1, 0)
+  ))
+
+# Step 2: Summarize counts and pivot longer
+interaction_summary_hp <- interaction_hp %>%
+  summarise(across(
+    c(boat_collision, shot, fishery_interaction, other_human_interaction),
+    ~ sum(.x, na.rm = TRUE)
+  )) %>%
+  pivot_longer(cols = everything(), names_to = "Interaction_Type", values_to = "Count")
+
+# Step 3: Plot
+ggplot(interaction_summary_hp, aes(x = Interaction_Type, y = Count, fill = Interaction_Type)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = Count), vjust = -0.5, size = 4) +  # <- this adds the labels
+  theme_minimal() +
+  labs(
+    title = "Human Interaction Types for Harbor Porpoise",
+    x = "Interaction Type",
+    y = "Number of Strandings"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    legend.position = "none"
+  )
+
+
   #----------------------Atlantic Large Whales-----------------------------
-#Graphing # of Altantic Large Whale Strandings
+#1. Graphing # of Altantic Large Whale Strandings
 filtered_altrp <- final_set %>%
   filter(
     (genus =="Eubalaena"& species == "glacialis") |
@@ -194,7 +260,7 @@ ggplot(yearly_altrp, aes(x = year_of_observation, y = Count, fill = scientific_n
   )
   theme_minimal()
 #---                        ---                       ---              ---
-#Line Plot for Atlantic Large Whale Take Reduction Plan
+#2. Line Plot for Atlantic Large Whale Take Reduction Plan
 filtered_altrp <- final_set %>%
   filter(
     (genus =="Eubalaena"& species == "glacialis") |  #North atlantic right whale
@@ -248,7 +314,7 @@ altrp_graph <- ggplot(yearly_altrp, aes(x = year_of_observation, y = Count, colo
 altrp_graph
 
 
-#Number of strandings per boundary area
+#---Number of strandings per boundary area--- --- --- --- ---
 final_set <- final_set %>%
   mutate(
     Area = case_when(
@@ -277,6 +343,133 @@ final_set %>%
   group_by(Area, genus, species) %>%
   summarise(Strandings = n(), .groups = "drop") %>%
   arrange(Area)   #counting by area
+
+#3. Plotting INteraction Types for Altantic Large Whales
+interaction_alw <- final_set %>%
+  filter(
+  (genus =="Eubalaena"& species == "glacialis") |  #North atlantic right whale
+  (genus == "Balaenoptera" & species == "physalus") |   #fin whale
+  (genus == "Megaptera" & species == "novaeangliae")      #humpback whale
+ ) %>%
+  mutate(across(
+    c(boat_collision, shot, fishery_interaction, other_human_interaction),
+    ~ ifelse(. == "Y", 1, 0)
+  ))
+
+# Step 2: Summarize counts and pivot longer
+interaction_summary_alw <- interaction_alw %>%
+  summarise(across(
+    c(boat_collision, shot, fishery_interaction, other_human_interaction),
+    ~ sum(.x, na.rm = TRUE)
+  )) %>%
+  pivot_longer(cols = everything(), names_to = "Interaction_Type", values_to = "Count")
+
+# Step 3: Plot
+ggplot(interaction_summary_alw, aes(x = Interaction_Type, y = Count, fill = Interaction_Type)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = Count), vjust = -0.5, size = 4) +  # <- this adds the labels
+  theme_minimal() +
+  labs(
+    title = "Human Interaction Types for Eubalaena glacialis",
+    x = "Interaction Type",
+    y = "Number of Strandings"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    legend.position = "none"
+  )
+
+
+
+
+
+
+#------------------------------Interaction Types for all TRP Species------------
+
+# Step 1: Clean and reshape data
+mortality_data <- final_set %>%
+  mutate(species = case_when(
+    genus == "Eubalaena" & species == "glacialis" ~ "North Atlantic Right Whale",
+    genus == "Balaenoptera" & species == "physalus" ~ "Fin Whale",
+    genus == "Megaptera" & species == "novaeangliae" ~ "Humpback Whale",
+    genus == "Phocoena" & species == "phocoena" ~ "Harbor Porpoise",
+    TRUE ~ NA_character_  # ← exclude everything else
+  )) %>%
+  filter(!is.na(species)) %>%  # keep only renamed species (your 4 targets)
+  mutate(across(
+    c(boat_collision, shot, fishery_interaction, other_human_interaction),
+    ~ ifelse(. == "Y", 1, 0)
+  ))
+
+# Step 1: Manually define the full lists
+species_list <- c("North Atlantic Right Whale", "Fin Whale", "Humpback Whale", "Harbor Porpoise")
+interaction_types <- c("boat_collision", "shot", "fishery_interaction", "other_human_interaction")
+
+# Step 2: Count actual detections
+mortality_long <- mortality_data %>%
+  pivot_longer(
+    cols = all_of(interaction_types),
+    names_to = "Interaction_Type",
+    values_to = "Detected"
+  ) %>%
+  filter(Detected == 1)
+
+mortality_counts <- mortality_long %>%
+  group_by(species, Interaction_Type) %>%
+  summarise(Total = n(), .groups = "drop")
+
+# Step 3: Force complete grid and fill missing combos with 0
+mortality_complete <- expand_grid(
+  species = species_list,
+  Interaction_Type = interaction_types
+) %>%
+  left_join(mortality_counts, by = c("species", "Interaction_Type")) %>%
+  mutate(Total = replace_na(Total, 0))
+
+mortality_table <- mortality_complete %>%
+  group_by(species) %>%
+  mutate(
+    Species_Total = sum(Total),
+    Percent = round(100 * Total / Species_Total, 1),
+    Combined = paste0(Total, " (", Percent, "%)")
+  ) %>%
+  ungroup()
+
+tabel_interaction_trp <- mortality_table %>%
+  select(species, Interaction_Type, Combined, Species_Total) %>%
+  pivot_wider(
+    names_from = Interaction_Type,
+    values_from = Combined
+  ) %>%
+  relocate(Species_Total, .after = last_col())
+
+
+# View the final table
+View(table_interaction_trp)
+
+
+# Step 6: Plotting 
+ggplot(mortality_complete, aes(x = species, y = Total, fill = Interaction_Type)) +
+  geom_col(position = "dodge") +
+  geom_text(
+    aes(label = Total),
+    position = position_dodge(width = 0.9), #<- this adds labels to each grouped bar
+    vjust = -0.5,
+    size = 3
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Total Mortalities by Interaction Type and Species (1996–2022)",
+    x = "Species",
+    y = "Number of Mortalities",
+    fill = "Interaction Type"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 25, hjust = 1)
+  )
+
+
+
 
 
 
