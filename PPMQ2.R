@@ -115,20 +115,16 @@ ggplot(cv_q2_df,
     x = "Year",
     y = "CV of spatial concentration",
     color = "Policy Category Overlap",
-    title = "Yearly spatial concentration of strandings in single-policy vs overlapping-policy areas"
+    title = "Yearly spatial concentration of strandings in overlapping policy areas"
   ) +
   theme(
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10)      # Axis tick labels
-  ) 
-
-
-
-
-
-
+      plot.title = element_text(color = "black", size = 17),      # Title color and size
+      axis.title.x = element_text(color = "black", size = 15),   # X-axis title
+      axis.title.y = element_text(color = "black", size = 15),   # Y-axis title
+      axis.text = element_text(size = 10), # Axis tick labels
+      legend.position = "bottom",
+      legend.title = element_text(size = 12,),
+      legend.text = element_text(size = 10)) 
 
 
 
