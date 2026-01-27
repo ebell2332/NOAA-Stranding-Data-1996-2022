@@ -12,11 +12,6 @@ q1 <- read_excel("/Users/ebell23/Downloads/strand_q1_allyrs.xlsx")
 colnames(q1)
 ####Question 1 Set Up####
 #make points
-lon_col <- "lon"
-lat_col <- "lat"
-
-q1_sf <- st_as_sf(q1, coords = c(lon_col, lat_col), crs = 4326, remove = FALSE)
-q1_sf <- st_transform(q1_sf, 5070) #planar coordinates system for PPM
 
 year_col <- "Year_num"
 
@@ -35,7 +30,7 @@ q1_sf <- st_transform(q1_sf, st_crs(study))
 #filter points to window
 inside <- lengths(st_intersects(q1_sf, study)) >0
 q1_sf_in <- q1_sf[inside, ]
-nrow(q1_sf_in)
+nrow(q1_sf_in) #make sure all points are fitting in the study window
 
 #check column context
 names(q1_sf_in)
@@ -50,7 +45,7 @@ W <- as.owin(study)
 
 
 
-#create PPM for one year (e.x 2009)
+#####create PPM for one year (e.x 2009)####
 
 yr <- 2009
 q1_yr <- q1_sf_in %>% filter(Year_num == yr)
@@ -259,10 +254,12 @@ ggplot(cv_filt, aes(x = year, y = cv_intensity, color = policy_category)) +
   ) +
   theme(
     plot.title = element_text(color = "black", size = 18),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10)      # Axis tick labels
-  ) 
+    axis.title.x = element_text(color = "black", size = 15),   # X-axis title
+    axis.title.y = element_text(color = "black", size = 15),   # Y-axis title
+    axis.text = element_text(size = 10), # Axis tick labels
+    legend.position = "bottom",
+    legend.title = element_text(size = 12,),
+    legend.text = element_text(size = 10)) 
 
 cv_filt
 #plot with direct, indirect, and none
@@ -508,3 +505,86 @@ ggplot(cv_tax_pol_mean,
     axis.text = element_text(size = 10)      # Axis tick labels
   ) +
   theme(legend.position = "none")
+
+
+
+
+
+
+####extra####
+#another way to loop the ppm but yields same results, just insures the intensity is compared correctly between covariates and marks
+taxon_gp <- "tax_group"  #new name for column 
+
+cv_intensity_ppm_tax2 <- function(sf_data, W,
+                                 year_val, context_val, taxon_val,
+                                 min_n = 50) {
+  
+  sub <- sf_data %>%
+    dplyr::filter(
+      Year_num == year_val,
+      context_q1 == context_val,
+      .data[[taxon_gp]] == taxon_val
+    )
+  
+  n <- nrow(sub)
+  if (n < min_n) return(NULL)
+  
+  xy <- st_coordinates(sub)
+  X  <- ppp(xy[,1], xy[,2], window = W)
+  
+  fit <- ppm(X ~ x + y)
+  
+  Z_im <- predict(fit, type = "intensity") #im object
+  z <- as.vector(Z_im$v)
+  z <- z[is.finite(z)] #drop NA/Inf
+  
+  if (length(z) < 2 || mean(z) <= 0) reutrn (NULL)
+  
+  tibble::tibble(
+    year = year_val,
+    context_q1 = context_val,
+    tax_group = taxon_val,
+    n = n,
+    cv_intensity = sd(z) / mean(z)
+  )
+}
+
+
+years_all <- sort(unique(q1_sf_in$Year_num))
+contexts  <- sort(unique(q1_sf_in$context_q1))
+taxa      <- sort(unique(q1_sf_in[[taxon_gp]])) #taxa = unique taxa within column
+
+results_tax1 <- list()
+
+for (yr in years_all) {
+  for (ctx in contexts) {
+    for (tx in taxa) {
+      
+      res <- cv_intensity_ppm_tax2(
+        sf_data = q1_sf_in,
+        W = W,
+        year_val = yr,
+        context_val = ctx,
+        taxon_val = tx,
+        min_n = 40
+      )
+      
+      if (!is.null(res)) results_tax1[[length(results_tax1) + 1]] <- res
+      }
+    }
+  }
+
+
+results_tax_df1 <- dplyr::bind_rows(results_tax1)
+results_tax_df1
+
+
+
+
+
+
+
+
+
+
+
