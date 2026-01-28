@@ -222,15 +222,13 @@ ggplot(pol_cat_count, aes(x = PolCategor, y = Count, fill = Target)) +
        fill = "Policy Target") +
   theme(
     legend.text = element_text(size = 11), 
+    legend.position = "bottom",
     plot.title = element_text(color = "black", size = 15),      # Title color and size
     axis.title.x = element_text(color = "black", size = 14),   # X-axis title
     axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
     axis.text = element_text(size = 10, color = "black")      # Axis tick labels
   ) +
   theme(axis.text.x = element_text(angle = 45, hjust =1))
-# Remove all grid lines
-pol_type + theme(panel.grid.major = element_blank(), 
-                   panel.grid.minor = element_blank())
 
 
 
