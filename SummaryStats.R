@@ -1,6 +1,6 @@
 #Stranding Summary Statistics#
 
-final_set <- read_excel(file = "/Users/ebell23/Downloads/total_strand.xlsx") #new dataset with datapoints from NC and Canada removed
+#final_set <- read_excel(file = "/Users/ebell23/Downloads/total_strand.xlsx") #new dataset with datapoints from NC and Canada removed
  
 
 ####1. Species####
@@ -169,25 +169,24 @@ custom_colors <- c("#D81B60", "#1E88E5", "#FFC107", "#004D40") #creating color-b
 tax_count <- ggplot(tax_species_counts, aes(x = tax_group, y = Count, fill = tax_group)) +
   geom_col() +
   scale_fill_manual(values = custom_colors, labels = c("Mysticeti (baleen whales)", "Odontocetes (toothed whales)","Pinnipeds (seals/sea lions)", "Unidentified")) + #assign colors to each taxonomic group and change the labels for the legend
-  geom_text(aes(label = Count), vjust = -0.5) + #adds count to bars
+  geom_text(aes(label = Count), vjust = -0.5, size = 3) + #adds count to bars
   labs(
        x = "Taxonomic Group", 
        y = "Number of Observed Strandings", fill = "Taxonomic Group") +
-  theme(legend.position = "bottom",
+  theme(legend.position = "none",
         legend.text = element_text(size = 8), 
-        plot.title = element_text(color = "black", size = 15),      # Title color and size
-        axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-        axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-        axis.text = element_text(size = 10)      # Axis tick labels
+        #plot.title = element_text(color = "black", size = 10),      # Title color and size
+        axis.title.x = element_text(color = "black", size = 7),   # X-axis title
+        axis.title.y = element_text(color = "black", size = 7),   # Y-axis title
+        axis.text = element_text(size = 0), # Axis tick labels
+        #legend.key.size = unit(0.3, "cm") #legend size
   )
    
 #combine map and chart
-combined_tax <- tax_map | tax_count
-print(combined_tax)
-
-
 library(patchwork)
 (tax_map + tax_count) + plot_layout(ncol =1)
+
+tax_map + inset_element(tax_count, left = 0.55, right =0.98, bottom = 0.01, top = 0.40) #inserted the bar chart in the bottom right corner of the map
 
 #----Monthly Strandings----####
 final_set %>%
@@ -257,7 +256,7 @@ ggplot(pol_cat_count, aes(x = PolCategor, y = Count, fill = Target)) +
     axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
     axis.text = element_text(size = 10, color = "black")      # Axis tick labels
   ) +
-  theme(axis.text.x = element_text(angle = 45, hjust =1))
+  theme(axis.text.x = element_text(angle = 0, hjust =1))
 
 
 
