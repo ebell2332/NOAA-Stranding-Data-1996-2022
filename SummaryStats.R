@@ -159,6 +159,35 @@ ggplot()+
   labs(x = "Year of Observation", y = "Total No. of Strandings", title = "Total Number of Strandings Annually by Taxonomic Group")+
   theme_minimal()
 
+#2. Total Counts for each taxonomic group
+tax_species_counts <- final_set %>%
+  group_by(tax_group) %>%
+  summarise(Count = n(), .groups = "drop") 
+
+custom_colors <- c("#D81B60", "#1E88E5", "#FFC107", "#004D40") #creating color-blind friendly pallete for strandings
+
+tax_count <- ggplot(tax_species_counts, aes(x = tax_group, y = Count, fill = tax_group)) +
+  geom_col() +
+  scale_fill_manual(values = custom_colors, labels = c("Mysticeti (baleen whales)", "Odontocetes (toothed whales)","Pinnipeds (seals/sea lions)", "Unidentified")) + #assign colors to each taxonomic group and change the labels for the legend
+  geom_text(aes(label = Count), vjust = -0.5) + #adds count to bars
+  labs(
+       x = "Taxonomic Group", 
+       y = "Number of Observed Strandings", fill = "Taxonomic Group") +
+  theme(legend.position = "bottom",
+        legend.text = element_text(size = 8), 
+        plot.title = element_text(color = "black", size = 15),      # Title color and size
+        axis.title.x = element_text(color = "black", size = 14),   # X-axis title
+        axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
+        axis.text = element_text(size = 10)      # Axis tick labels
+  )
+   
+#combine map and chart
+combined_tax <- tax_map | tax_count
+print(combined_tax)
+
+
+library(patchwork)
+(tax_map + tax_count) + plot_layout(ncol =1)
 
 #----Monthly Strandings----####
 final_set %>%
