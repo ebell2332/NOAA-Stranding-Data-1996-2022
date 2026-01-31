@@ -41,7 +41,7 @@ table(q1_sf_in$context_q1)
 plot(st_geometry(study), border = "black")
 plot(st_geometry(q1_sf_in), add = TRUE, pch = 16, cex = 0.2)
 
-W <- as.owin(study)
+W <- as.owin(study) #study window
 
 
 
@@ -361,6 +361,158 @@ ggplot(cv_filt_2mn, aes(x = policy_category, y = mean_cv)) +
     axis.text.x = element_text(angle = 0, hjust = 1)
   )
 
+#####a. Run model to map concentrations in the study area####
+cv_q1 <- function(sf_data1, W, year_val, context_val, min_n = 50) {
+  
+  sub <- sf_data1 %>%
+    filter(
+      Year_num == year_val,
+      context_q1 == context_val
+    )
+  
+  n <- nrow(sub)
+  if (n < min_n) return(NULL)
+  
+  #fit ppm in same CRS as study area/W
+  xy <- st_coordinates(sub)
+  X  <- ppp(xy[,1], xy[,2], window = W)
+  
+  fit <- ppm(X ~ x + y)
+  
+  lam_im1 <- predict(fit, type = "trend") #predicted intensity surface
+  #Z <- as.numeric(predict(fit))
+  
+  
+  lam_vals1 <- as.vector(lam_im1$v) #CV computed from predicted pixel values
+  lam_vals1 <- lam_vals1[is.finite(lam_vals1) & lam_vals1 > 0] #CV computed from predicted pixel values
+  cv_val1 <- sd(lam_vals1) / mean(lam_vals1)
+  
+  library(terra)
+  ras_planar <- terra::rast(lam_im1) #convert intensity surface to lat/long for consistent mapping
+  terra::crs(ras_planar) <- sf::st_crs(study)$wkt #assign CRS 
+  
+  ras_ll <- project(ras_planar, "EPSG:4326") #reproject to lat/long
+  
+  map_gg <- as.data.frame(ras_ll, xy = TRUE, na.rm = TRUE) #raster to df for ggplot
+  names(map_gg) <- c("lon", "lat", "intensity")
+  
+  
+  map_gg <- map_gg %>%
+    mutate(
+      Year_num = year_val,
+      context_class = context_val,
+      n = n,
+      cv_intensity1 = cv_val1
+    )
+  
+  list(
+    summary = tibble(
+      Year_num = year_val,
+      context_class = context_val,
+      n = n,
+      cv_intensity1 = cv_val1
+    ),
+    map = map_gg
+  )
+}
+
+
+years_all <- sort(unique(q1_sf_in$Year_num)) #sorting by years
+contexts <- sort(unique(q1_sf_in$context_q1)) #sorting contexts
+
+results_q1 <- list()
+
+for (yr in years_all) {
+  for (ctx in contexts) {
+    
+    res <- cv_q1(
+      sf_data1 = q1_sf_in,
+      W = W,
+      year_val = yr,
+      context_val = ctx,
+      min_n = 50 #minimum of 50 strandings in this year x overlap class
+    )
+    
+    if (!is.null(res)) {
+      results_q1[[paste(yr, ctx, sep = "_")]] <- res
+    }
+  }
+}
+
+cv_df1 <- bind_rows(lapply(results_q1, '[[', "summary"))
+map_gg <- bind_rows(lapply(results_q1, '[[', "map"))
+head(map_gg, 5)
+
+yr_spec <- 2017 #choose specific year to filter results to
+
+map_gg_filt <- map_gg %>%
+  filter(context_class %in% c("IndirectOnly", "DirectOnly")) %>%
+  mutate(policy_category = case_when(context_class == "DirectOnly" ~ "Direct", context_class == "IndirectOnly" ~ "Indirect"))
+
+map_yr_filt <- map_gg_filt %>%
+  filter(Year_num == yr_spec) #filter data set to one year
+
+ggplot(map_yr_filt) + #plot the filtered year
+  geom_tile(aes(x = lon, y = lat, fill = intensity)) +
+  coord_fixed() +
+  scale_fill_viridis_c(name = "Intensity") +
+  facet_wrap(~ context_class, ncol = 1) + #makes the context vertical
+  #facet_grid(~context_class) + #makes context horizontal
+  theme_minimal()+
+  labs(fill = "Intensity", title = "Spatial stranding concentration in policy target areas in 2017") +
+  theme_gray() #makes background grey
+
+
+#Multiple years, average mean per pixel across years
+#average yearly ppm spatial prediction of each overlap class
+
+yrs_mult <- 2017:2022
+
+map_mean_filt <- map_gg_filt %>%
+  filter(Year_num %in% yrs_mult) %>%
+  mutate(lon_r = round(lon, 3),
+         lat_r = round(lat, 3)) %>%
+  group_by(context_class, lon_r, lat_r) %>%
+  summarise(mean_intensity = mean(intensity, na.rm = TRUE),
+            n_years = n_distinct(Year_num),
+            .groups = "drop")
+
+map_mn_filt <- ggplot(map_mean_filt)+
+  geom_tile(aes(x = lon_r, y = lat_r, fill = mean_intensity)) +
+  facet_wrap(~context_class) +
+  coord_equal()+
+  scale_fill_viridis_c(name = "Average Intensity") +
+  theme_minimal()+
+  labs(title = "Average predicted spatial concentration in policy target areas (2017-2022)",
+       x = "Longitude", y = "Latitude") +
+  theme_gray()
+
+yrs_mult1 <- 1996:2002
+
+map_mn_filt1 <- map_gg_filt %>%
+  filter(Year_num %in% yrs_mult1) %>%
+  mutate(lon_r = round(lon, 3),
+         lat_r = round(lat, 3)) %>%
+  group_by(context_class, lon_r, lat_r) %>%
+  summarise(mean_intensity = mean(intensity, na.rm = TRUE),
+            n_years = n_distinct(Year_num),
+            .groups = "drop")
+
+map_mn1 <- ggplot(map_mn_filt1)+
+  geom_tile(aes(x = lon_r, y = lat_r, fill = mean_intensity)) +
+  scale_fill_viridis_c(name = "Average Intensity") +
+  facet_wrap(~context_class) +
+  coord_equal()+
+  theme_minimal()+
+  labs(title = "Average predicted spatial concentration in policy target areas (1996-2002)",
+       x = "Longitude", y = "Latitude") +
+  theme_gray()
+
+
+library(patchwork)
+(map_mn1 + map_mn_filt) + plot_layout(ncol =1)
+
+
 ####4. Run loop for entire study period with taxonomic groups####
 taxon_gp <- "tax_group"  #new name for column 
 
@@ -508,6 +660,132 @@ ggplot(cv_tax_pol_mean,
 
 
 
+####Plotting By Taxonomic group and Total by Year----
+#Not helpful
+taxon_gp <- "tax_group"  #new name for column 
+
+#run for taxa
+cv_intensity_ppm_tax <- function(sf_data, W,
+                                 year_val, context_val, taxon_val,
+                                 min_n = 50) {
+  
+  sub <- sf_data %>%
+    dplyr::filter(
+      Year_num == year_val,
+      context_q1 == context_val,
+      .data[[taxon_gp]] == taxon_val
+    )
+  
+  n <- nrow(sub)
+  if (n < min_n) return(NULL)
+  
+  xy <- st_coordinates(sub)
+  X  <- ppp(xy[,1], xy[,2], window = W)
+  
+  fit <- ppm(X ~ x + y)
+  
+  Z <- as.numeric(predict(fit))
+  
+  tibble::tibble(
+    year = year_val,
+    context_q1 = context_val,
+    series = taxon_val, #rename for plotting
+    n = n,
+    cv_intensity = sd(Z) / mean(Z)
+  )
+}
+
+#run for total 
+cv_intensity_ppm_total <- function(sf_data, W,
+                                 year_val, context_val,
+                                 min_n = 50) {
+  
+  sub <- sf_data %>%
+    dplyr::filter(
+      Year_num == year_val,
+      context_q1 == context_val,
+    )
+  
+  n <- nrow(sub)
+  if (n < min_n) return(NULL)
+  
+  xy <- st_coordinates(sub)
+  X  <- ppp(xy[,1], xy[,2], window = W)
+  
+  fit <- ppm(X ~ x + y)
+  
+  Z <- as.numeric(predict(fit))
+  
+  tibble::tibble(
+    year = year_val,
+    context_q1 = context_val,
+    series = "Total", #rename for plotting
+    n = n,
+    cv_intensity = sd(Z) / mean(Z)
+  )
+}
+
+
+years_all <- sort(unique(q1_sf_in$Year_num))
+contexts  <- sort(unique(q1_sf_in$context_q1))
+taxa      <- sort(unique(q1_sf_in[[taxon_gp]])) #taxa = unique taxa within column
+
+results_tax <- list()
+results_total <- list()
+
+for (yr in years_all) {
+  for (ctx in contexts) {
+      
+    #for total series
+      resT <- cv_intensity_ppm_total(
+        sf_data = q1_sf_in,
+        W = W,
+        year_val = yr,
+        context_val = ctx,
+        min_n = 40
+      )    
+    if (!is.null(resT)) results_total[[length(results_total) + 1]] <- resT
+    
+    #for taxon specific 
+    for (tx in taxa) {
+      res <- cv_intensity_ppm_tax(
+        sf_data = q1_sf_in,
+        W = W,
+        year_val = yr,
+        context_val = ctx,
+        taxon_val = tx,
+        #taxon_gp = taxon_gp,
+        min_n = 40
+      )
+      
+      if (!is.null(res)) results_tax[[length(results_tax) + 1]] <- res
+      }
+    }
+  }
+
+cv_tax_df <- dplyr::bind_rows(results_tax)
+cv_total_df <- dplyr::bind_rows(results_total)
+
+
+tax_keep <- c("Pinnipeds", "Mysticeti", "Odontocetes") #taxonomic groups to keep
+
+
+#fix because total is not showing up
+# 3) combine + plot
+plot_tax_df <- bind_rows(cv_tax_df, cv_total_df %>%
+ filter(series %in% tax_keep)) %>%
+  mutate (year = as.integer(year), series = factor(series, levels = c("Total", tax_keep)))
+
+plottax_filt <- plot_tax_df %>%
+  filter(context_q1 %in% c("IndirectOnly", "DirectOnly"))
+
+ggplot(plottax_filt, aes(x = year, y = cv_intensity, color = series, group = series)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 1.6) +
+  facet_wrap(~ context_q1, scales = "free_y") +
+  labs(x = "Year", y = "Coefficient of Variation of predicted intensity", color = "Series") +
+  theme_minimal()
+
 
 
 
@@ -577,6 +855,8 @@ for (yr in years_all) {
 
 results_tax_df1 <- dplyr::bind_rows(results_tax1)
 results_tax_df1
+
+
 
 
 
