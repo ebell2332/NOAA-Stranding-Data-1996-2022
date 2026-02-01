@@ -225,7 +225,7 @@ ggplot(monthly_counts, aes(x = month_of_observation, y = Count, color = Group_sp
 pol_data <- read_excel(path = "/Users/ebell23/Downloads/policy_09.xlsx")
 
 Sys.setenv(SHAPE_RESTORE_SHX = "YES")
-policies_data <- st_read("/Users/ebell23/Downloads/policy_merge09_ExportFeatures.shp", quiet = TRUE) 
+policies_data <- st_read("/Users/ebell23/Downloads/AP_Data/Tables/policy_merge09_ExportFeatures.shp", quiet = TRUE) 
 
 #1. Sum of each policy category within target
 length(unique(pol_data$PolicType))
@@ -241,7 +241,7 @@ pol_cat_count <- policies_data %>%
 print(pol_cat_count)
 
 
-ggplot(pol_cat_count, aes(x = PolCategor, y = Count, fill = Target)) +
+ ggplot(pol_cat_count, aes(x = PolCategor, y = Count, fill = Target)) +
   geom_col(position = position_dodge(width = 0.8)) +
   geom_text(aes(label = Count), vjust = -0.5) + #adds count to bars
   labs(title = "Policy counts by target and category",
@@ -250,7 +250,7 @@ ggplot(pol_cat_count, aes(x = PolCategor, y = Count, fill = Target)) +
        fill = "Policy Target") +
   theme(
     legend.text = element_text(size = 11), 
-    legend.position = "bottom",
+    legend.position = "right",
     plot.title = element_text(color = "black", size = 15),      # Title color and size
     axis.title.x = element_text(color = "black", size = 14),   # X-axis title
     axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
