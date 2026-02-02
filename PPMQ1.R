@@ -5,7 +5,7 @@ library(purrr)
 library(spatstat.model)
 
 
-q1 <- read_excel("/Users/ebell23/Downloads/strand_q1_allyrs.xlsx")
+q1 <- read_excel("/Users/ebell23/Downloads/AP_Data/Tables/strand_q1_allyrs.xlsx")
 
 
 
@@ -18,7 +18,7 @@ year_col <- "Year_num"
 #add study area
 library(sf)
 Sys.setenv(SHAPE_RESTORE_SHX = "YES")
-study <- st_read("/Users/ebell23/Downloads/Study_Area1_ExportFeatures.shp", quiet = TRUE) 
+study <- st_read("/Users/ebell23/Downloads/AP_Data/Tables/Study_Area1_ExportFeatures.shp", quiet = TRUE) 
 st_crs(study) #check coordinate system
 st_bbox(study) #check geometry of study area
 
@@ -248,7 +248,7 @@ ggplot(cv_filt, aes(x = year, y = cv_intensity, color = policy_category)) +
   geom_point(size = 1.8) +
   labs(
     x = "Year",
-    y = "CV of spatial concentration",
+    y = "Coefficient of Variation of spatial concentration",
     color = "Policy Target",
     title = "Yearly spatial concentration of strandings by policy target"
   ) +
@@ -272,11 +272,18 @@ ggplot(cv_filt_2, aes(x = year, y = cv_intensity, color = policy_category)) +
   geom_point(size = 1.8) +
   labs(
     x = "Year",
-    y = "CV of spatial concentration",
+    y = "Coefficient of variation of spatial concentration",
     color = "Policy Target",
     title = "Yearly spatial concentration of strandings by policy target"
   ) +
-  theme_minimal() #filtered line plot to only direct and indirect and none
+  theme(
+    plot.title = element_text(color = "black", size = 16),      # Title color and size
+    axis.title.x = element_text(color = "black", size = 15),   # X-axis title
+    axis.title.y = element_text(color = "black", size = 15),   # Y-axis title
+    axis.text = element_text(size = 10), # Axis tick labels
+    legend.position = "bottom",
+    legend.title = element_text(size = 12,),
+    legend.text = element_text(size = 10)) 
 
 cv_filt_2
 
@@ -512,6 +519,75 @@ map_mn1 <- ggplot(map_mn_filt1)+
 library(patchwork)
 (map_mn1 + map_mn_filt) + plot_layout(ncol =1)
 
+
+#Map of policy target with none included
+map_gg_filt2 <- map_gg %>%
+  filter(context_class %in% c("IndirectOnly", "DirectOnly", "None")) %>%
+  mutate(policy_category = case_when(context_class == "DirectOnly" ~ "Direct", context_class == "IndirectOnly" ~ "Indirect", context_class == "None" ~ "None"))
+
+years <- 2022
+
+map_yr_filt2 <- map_gg_filt2 %>%
+  filter(Year_num == years) #filter data set to one year
+
+ggplot(map_yr_filt2) + #plot the filtered year
+  geom_tile(aes(x = lon, y = lat, fill = intensity)) +
+  coord_fixed() +
+  scale_fill_viridis_c(name = "Intensity") +
+  #facet_wrap(~ context_class, ncol = 1) + #makes the context vertical
+  facet_grid(~context_class) + #makes context horizontal
+  theme_minimal()+
+  labs(fill = "Intensity", title = "Spatial stranding concentration in policy target areas in 2022") +
+  theme_gray() #makes background grey
+
+
+
+years_mult1 <- 1996:2002
+
+map_mn_filt2 <- map_gg_filt2 %>%
+  filter(Year_num %in% years_mult1) %>%
+  mutate(lon_r = round(lon, 3),
+         lat_r = round(lat, 3)) %>%
+  group_by(context_class, lon_r, lat_r) %>%
+  summarise(mean_intensity = mean(intensity, na.rm = TRUE),
+            n_years = n_distinct(Year_num),
+            .groups = "drop")
+
+map_mean_1 <- ggplot(map_mn_filt2)+
+  geom_tile(aes(x = lon_r, y = lat_r, fill = mean_intensity)) +
+  scale_fill_viridis_c(name = "Average Intensity") +
+  facet_wrap(~context_class) +
+  coord_equal()+
+  theme_minimal()+
+  labs(title = "Average predicted spatial concentration in policy target areas (1996-2002)",
+       x = "Longitude", y = "Latitude") +
+  theme_gray()
+
+
+years_mult <- 2017:2022
+
+map_mean_filt2 <- map_gg_filt2 %>%
+  filter(Year_num %in% years_mult) %>%
+  mutate(lon_r = round(lon, 3),
+         lat_r = round(lat, 3)) %>%
+  group_by(context_class, lon_r, lat_r) %>%
+  summarise(mean_intensity = mean(intensity, na.rm = TRUE),
+            n_years = n_distinct(Year_num),
+            .groups = "drop")
+
+map_mean_2 <- ggplot(map_mean_filt2)+
+  geom_tile(aes(x = lon_r, y = lat_r, fill = mean_intensity)) +
+  facet_wrap(~context_class) +
+  coord_equal()+
+  scale_fill_viridis_c(name = "Average Intensity") +
+  theme_minimal()+
+  labs(title = "Average predicted spatial concentration in policy target areas (2017-2022)",
+       x = "Longitude", y = "Latitude") +
+  theme_gray()
+
+
+library(patchwork)
+(map_mean_1 + map_mean_2) + plot_layout(ncol =1)
 
 ####4. Run loop for entire study period with taxonomic groups####
 taxon_gp <- "tax_group"  #new name for column 
