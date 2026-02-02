@@ -3,7 +3,7 @@ library(spatstat.explore)
 library(purrr)
 library(spatstat.model)
 
-q2 <- read_excel("/Users/ebell23/Downloads/strand_q2_allyrs.xlsx")
+q2 <- read_excel("/Users/ebell23/Downloads/AP_Data/Tables/strand_q2_allyrs.xlsx")
 
 
 colnames(q2)
@@ -16,7 +16,7 @@ lat_col <- "lat"
 #add study area
 library(sf)
 Sys.setenv(SHAPE_RESTORE_SHX = "YES")
-study_sf <- st_read("/Users/ebell23/Downloads/Study_Area1_ExportFeatures.shp", quiet = TRUE) 
+study_sf <- st_read("/Users/ebell23/Downloads/AP_Data/Tables/Study_Area1_ExportFeatures.shp", quiet = TRUE) 
 st_crs(study_sf) #check coordinate system
 st_bbox(study_sf) #check geometry of study area
 W_q2 <- as.owin(study_sf)
@@ -119,7 +119,7 @@ ggplot(cv_q2_df,
   geom_point(size = 1.5) +
   labs(
     x = "Year",
-    y = "CV of spatial concentration",
+    y = "Coefficient of variation of spatial concentration",
     color = "Policy Category Overlap",
     title = "Yearly spatial concentration of strandings in overlapping policy areas"
   ) +
