@@ -7,11 +7,7 @@ q2 <- read_excel("/Users/ebell23/Downloads/AP_Data/Tables/strand_q2_allyrs.xlsx"
 
 
 colnames(q2)
-####Question 2####
-#make points
-lon_col <- "lon"
-lat_col <- "lat"
-
+####Question 2###
 #Set Up for Model####
 #add study area
 library(sf)
@@ -29,10 +25,11 @@ st_crs(q2_sf)
 
 #create points with overlap class (marks)
 q2_sf_filt <- q2_sf %>% mutate(overlap_class = case_when(
-  overlap_class %in% c("2plus") ~ "2plus", overlap_class %in% c("1") ~ "1", TRUE ~ NA_character_)) %>%
+  overlap_class %in% c("1") ~ "Single", overlap_class %in% c("2plus") ~ "Multiple", TRUE ~ NA_character_)) %>%
   filter(!is.na(overlap_class)) %>%
-  mutate(overlap_class = factor(overlap_class, levels = c("1", "2plus")
+  mutate(overlap_class = factor(overlap_class, levels = c("Single", "Multiple")
 ))
+
 
 coords <- st_coordinates(q2_sf_filt) #coordinates
 inside <- spatstat.geom::inside.owin(coords[,1], coords[,2], W_q2) #points inside the window
@@ -321,6 +318,8 @@ for (yr in years_all) {
 cv2_df <- bind_rows(lapply(results2_q2, '[[', "summary"))
 map_val <- bind_rows(lapply(results2_q2, '[[', "map"))
 
+map_val$overlap_class <- factor(map_val$overlap_class, levels = c("Single", "Multiple"),
+                                labels = c("Single", "Multiple")) #re-order so that single is first and its not by alphabetical order
 
 yr_spec <- 2017 #choose specific year to filter results to
 
@@ -328,12 +327,16 @@ map_yr <- map_val %>%
   filter(Year_num == yr_spec) #filter data set to one year
 
 
+
 ggplot(map_yr) + #plot the filtered year
   geom_tile(aes(x = lon, y = lat, fill = intensity)) +
   coord_fixed() +
-  scale_fill_viridis_c(name = "Intensity") +
-  facet_wrap(~ overlap_class, ncol = 1)+ #makes the overlap classes vertical
+  #scale_fill_viridis_c(name = "Intensity") +
+  scale_fill_distiller(palette = "YlOrRd", direction =1, name = "Intensity") +
+  #facet_wrap(~ overlap_class, ncol = 1)+ #makes the overlap classes vertical
   facet_grid(~overlap_class) + #makes overlap classes horizontal
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = NA, color = "black") + #adds east coast outline to the map
   theme_minimal()+
   labs(fill = "Intensity", title = "Spatial stranding concentration in 2017 by overlap categories") +
   theme_gray() #makes background grey
@@ -371,7 +374,10 @@ map_mn <- ggplot(map_mean)+
   geom_tile(aes(x = lon_r, y = lat_r, fill = mean_intensity)) +
   facet_wrap(~overlap_class) +
   coord_equal()+
-  scale_fill_viridis_c(name = "Average Intensity") +
+  #scale_fill_viridis_c(name = "Average Intensity") +
+  scale_fill_distiller(palette = "YlOrRd", direction =1, name = "Average Intensity") +
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = NA, color = "black") + #adds east coast outline to the map
   theme_minimal()+
   labs(title = "Average predicted spatial concentration from 2017-2022",
        x = "Longitude", y = "Latitude") +
@@ -392,7 +398,10 @@ map_mn1 <- ggplot(map_mean1)+
   geom_tile(aes(x = lon_r, y = lat_r, fill = mean_intensity)) +
   facet_wrap(~overlap_class) +
   coord_equal()+
-  scale_fill_viridis_c(name = "Average Intensity") +
+  #scale_fill_viridis_c(name = "Average Intensity") +
+  scale_fill_distiller(palette = "YlOrRd", direction =1, name = "Average Intensity") +
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = NA, color = "black") + #adds east coast outline to the map
   theme_minimal()+
   labs(title = "Average predicted spatial concentration from 1996-2002",
        x = "Longitude", y = "Latitude") +
