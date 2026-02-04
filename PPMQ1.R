@@ -1,5 +1,4 @@
 library(spatstat.geom)
-#library(spatstat.core)
 library(spatstat.explore)
 library(purrr)
 library(spatstat.model)
@@ -13,7 +12,7 @@ colnames(q1)
 ####Question 1 Set Up####
 #make points
 
-year_col <- "Year_num"
+year_col <- "Year_num" #no longer necessary to rename
 
 #add study area
 library(sf)
@@ -462,12 +461,16 @@ map_yr_filt <- map_gg_filt %>%
 ggplot(map_yr_filt) + #plot the filtered year
   geom_tile(aes(x = lon, y = lat, fill = intensity)) +
   coord_fixed() +
-  scale_fill_viridis_c(name = "Intensity") +
+  #scale_fill_viridis_c(name = "Intensity") +
+  scale_fill_distiller(palette = "YlOrRd", direction =1) + #yellow to red heat map sequentially
   facet_wrap(~ context_class, ncol = 1) + #makes the context vertical
   #facet_grid(~context_class) + #makes context horizontal
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = NA, color = "black") + #adds east coast outline to the map
   theme_minimal()+
   labs(fill = "Intensity", title = "Spatial stranding concentration in policy target areas in 2017") +
   theme_gray() #makes background grey
+
 
 
 #Multiple years, average mean per pixel across years
@@ -488,7 +491,10 @@ map_mn_filt <- ggplot(map_mean_filt)+
   geom_tile(aes(x = lon_r, y = lat_r, fill = mean_intensity)) +
   facet_wrap(~context_class) +
   coord_equal()+
-  scale_fill_viridis_c(name = "Average Intensity") +
+  #scale_fill_viridis_c(name = "Average Intensity") +
+  scale_fill_distiller(palette = "YlOrRd", direction =1, name = "Average Intensity") + #yellow to red heat map sequentially
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = NA, color = "black") + #adds east coast outline to the map
   theme_minimal()+
   labs(title = "Average predicted spatial concentration in policy target areas (2017-2022)",
        x = "Longitude", y = "Latitude") +
@@ -507,9 +513,12 @@ map_mn_filt1 <- map_gg_filt %>%
 
 map_mn1 <- ggplot(map_mn_filt1)+
   geom_tile(aes(x = lon_r, y = lat_r, fill = mean_intensity)) +
-  scale_fill_viridis_c(name = "Average Intensity") +
+  #scale_fill_viridis_c(name = "Average Intensity") +
+  scale_fill_distiller(palette = "YlOrRd", direction =1, name = "Average Intensity") + #yellow to red heat map sequentially
   facet_wrap(~context_class) +
   coord_equal()+
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = NA, color = "black") + #adds east coast outline to the map
   theme_minimal()+
   labs(title = "Average predicted spatial concentration in policy target areas (1996-2002)",
        x = "Longitude", y = "Latitude") +
