@@ -169,7 +169,7 @@ custom_colors <- c("#D81B60", "#1E88E5", "#FFC107", "#004D40") #creating color-b
 tax_count <- ggplot(tax_species_counts, aes(x = tax_group, y = Count, fill = tax_group)) +
   geom_col() +
   scale_fill_manual(values = custom_colors, labels = c("Mysticeti (baleen whales)", "Odontocetes (toothed whales)","Pinnipeds (seals/sea lions)", "Unidentified")) + #assign colors to each taxonomic group and change the labels for the legend
-  geom_text(aes(label = Count), vjust = -0.5, size = 3) + #adds count to bars
+  geom_text(aes(label = tax_group), vjust = -0.5, size = 3) + #adds name to bars
   labs(
        x = "Taxonomic Group", 
        y = "Number of Observed Strandings", fill = "Taxonomic Group") +
@@ -181,12 +181,31 @@ tax_count <- ggplot(tax_species_counts, aes(x = tax_group, y = Count, fill = tax
         axis.text = element_text(size = 0), # Axis tick labels
         #legend.key.size = unit(0.3, "cm") #legend size
   )
-   
+
 #combine map and chart
 library(patchwork)
 (tax_map + tax_count) + plot_layout(ncol =1)
 
-tax_map + inset_element(tax_count, left = 0.55, right =0.98, bottom = 0.01, top = 0.40) #inserted the bar chart in the bottom right corner of the map
+tax_map + inset_element(tax_count, left = 0.55, right =0.98, bottom = 0.01, top = 0.50) #inserted the bar chart in the bottom right corner of the map
+   
+
+#simple bar graph with taxonomic count
+ggplot(tax_species_counts, aes(x = tax_group, y = Count, fill = tax_group)) +
+  geom_col() +
+  scale_fill_manual(values = c("grey10", "grey10", "grey10", "grey10"), labels = c("Mysticeti (baleen whales)", "Odontocetes (toothed whales)","Pinnipeds (seals/sea lions)", "Unidentified")) + #assign colors to each taxonomic group and change the labels for the legend
+  geom_text(aes(label = Count), vjust = -0.5, size = 5) + #adds count to bars
+  labs(
+    x = "Taxonomic Group", 
+    y = "Number of Observed Strandings", fill = "Taxonomic Group", title = "Marine mammal strandings by taxonomic group") +
+  theme(legend.position = "none",
+        legend.text = element_text(size = 8), 
+        plot.title = element_text(color = "black", size = 15),      # Title color and size
+        axis.title.x = element_text(color = "black", size = 13),   # X-axis title
+        axis.title.y = element_text(color = "black", size = 13),   # Y-axis title
+        axis.text = element_text(color = "black", size = 11) # Axis tick labels
+  )
+
+
 
 #----Monthly Strandings----####
 final_set %>%
