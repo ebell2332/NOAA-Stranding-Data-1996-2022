@@ -247,12 +247,12 @@ ggplot(cv_filt, aes(x = year, y = cv_intensity, color = policy_category)) +
   geom_point(size = 1.8) +
   labs(
     x = "Year",
-    y = "Coefficient of Variation of spatial concentration",
+    y = "Coefficient of variation of spatial concentration",
     color = "Policy Target",
     title = "Yearly spatial concentration of strandings by policy target"
   ) +
   theme(
-    plot.title = element_text(color = "black", size = 18),      # Title color and size
+    plot.title = element_text(color = "black", size = 17),      # Title color and size
     axis.title.x = element_text(color = "black", size = 15),   # X-axis title
     axis.title.y = element_text(color = "black", size = 15),   # Y-axis title
     axis.text = element_text(size = 10), # Axis tick labels
@@ -276,7 +276,7 @@ ggplot(cv_filt_2, aes(x = year, y = cv_intensity, color = policy_category)) +
     title = "Yearly spatial concentration of strandings by policy target"
   ) +
   theme(
-    plot.title = element_text(color = "black", size = 16),      # Title color and size
+    plot.title = element_text(color = "black", size = 17),      # Title color and size
     axis.title.x = element_text(color = "black", size = 15),   # X-axis title
     axis.title.y = element_text(color = "black", size = 15),   # Y-axis title
     axis.text = element_text(size = 10), # Axis tick labels
