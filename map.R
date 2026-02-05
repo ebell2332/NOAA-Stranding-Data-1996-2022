@@ -32,7 +32,7 @@ state_centroids <- east_coast_map %>%
   group_by(state_abb) %>% 
   summarise(long = mean(long), lat = mean(lat))
 
-custom_colors1 <- c("#D81B60", "#1E88E5", "#FFC107", "#004D40","#E3A754", "#64F626")
+custom_colors1 <- c("#D81B60", "#1E88E5", "#FFC107", "#004D40","darkred", "#64F626")
 
 main_map <- ggplot() +
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
@@ -60,7 +60,7 @@ main_map <- ggplot() +
 inset_map <- shape_simple %>%
   filter(PolCategor %in% c("Closed Area", "MPA", "NARW-specific"))
 
-group_colors <- c("#1E88E5","#004D40","#E3A754")
+group_colors <- c("#1E88E5","#004D40","darkred")
 
 inset_map <- ggplot() +
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
@@ -68,18 +68,20 @@ inset_map <- ggplot() +
   geom_sf(data = inset_map, aes(fill = PolCategor)) + 
   scale_fill_manual(values = group_colors, guide = "none") +
   coord_sf(xlim = c(-76, -65.80), ylim = c(36.5, 44.5)) + #adjusts the zoom 
+  theme_gray() + #makes background grey
   theme(
     legend.position = "none",
     legend.title = element_blank(),
     axis.title = element_blank(),
-    axis.ticks = element_blank()
-  ) +
-  theme_gray() #makes background grey
-  
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank()
+  ) 
+
+inset_map  
 
 #combine both policy category maps  
 library(patchwork)
-pol_maps <- main_map + inset_element(inset_map, left = 0.55, right =0.98, bottom = 0.01, top = 0.40)
-
+main_map + inset_element(inset_map, left = 0.65, right =1.00, bottom = 0.02, top = 0.50) #left/right = horizontal size and position, top/bottom = vertical size and position
 
 
