@@ -109,6 +109,9 @@ cv_q2_df %>% group_by(overlap_class) %>%
   median_n = median(n),
   max_n = max(n))
 
+cv_q2_df$overlap_class <- factor(cv_q2_df$overlap_class, levels = c("Single", "Multiple"),
+                                labels = c("Single", "Multiple")) #re-order so that single is first and its not by alphabetical order
+
 #Lineplot of CV intensities by year
 ggplot(cv_q2_df,
        aes(x = year, y = cv_intensity, color = overlap_class, group = overlap_class)) +
