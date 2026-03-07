@@ -2,6 +2,7 @@
 
 #final_set <- read_excel(file = "/Users/ebell23/Downloads/total_strand.xlsx") #new dataset with datapoints from NC and Canada removed
  
+coast_str02 <- read_excel("/Users/ebell23/Downloads/coastal_strandings02.xlsx")
 
 ####1. Species####
 final_set %>%
@@ -147,40 +148,49 @@ uni <- final_set %>%
   summarise(Count = n(), .groups = "drop")
 
 ggplot()+
-  geom_bar(data = total, aes(x=year_of_observation, y = Count), stat = "identity", fill = "lightgrey") +
-  geom_line(data = pin, aes(x=year_of_observation, y = Count, color = "steelblue"), linewidth = 1)+
-  geom_line(data = mys, aes(x=year_of_observation, y = Count, color = "red"), linewidth = 1)+
-  geom_line(data = odo, aes(x=year_of_observation, y = Count, color = "darkgreen"), linewidth = 1)+
-  geom_line(data = uni, aes(x=year_of_observation, y = Count, color = "grey4"), linewidth = 1)+
+  geom_bar(data = total, aes(x=year_of_observation, y = Count), stat = "identity", fill = NA, color = "black") +
+  geom_line(data = mys, aes(x=year_of_observation, y = Count, color = "#D81B60"), linewidth = 1)+
+  geom_line(data = odo, aes(x=year_of_observation, y = Count, color = "mediumblue"), linewidth = 1)+
+  geom_line(data = pin, aes(x=year_of_observation, y = Count, color = "#FFC107"), linewidth = 1)+
+  geom_line(data = uni, aes(x=year_of_observation, y = Count, color = "#004D40"), linewidth = 1)+
   scale_color_identity(name = "Taxonomic Group",
-                       breaks = c("steelblue", "red", "darkgreen", "grey4"),
-                       labels = c("Pinnipeds", "Mysticeti", "Odontocetes", "Unidentified"),
+                       breaks = c("#D81B60", "mediumblue","#FFC107", "#004D40"),
+                       labels = c( "Mysticeti", "Odontocetes", "Pinnipeds","Unidentified"),
                        guide = "legend") +
-  labs(x = "Year of Observation", y = "Total No. of Strandings", title = "Total Number of Strandings Annually by Taxonomic Group")+
-  theme_minimal()
+  labs(x = "Year of observation", y = "Number of observed strandings", title = "Total number of strandings by taxonomic groups")+
+  theme(
+        legend.text = element_text(size = 8), 
+        plot.title = element_text(color = "black", size = 15),      # Title color and size
+        axis.title.x = element_text(color = "black", size = 13),   # X-axis title
+        axis.title.y = element_text(color = "black", size = 13),   # Y-axis title
+        axis.text = element_text(color = "black", size = 11), # Axis tick labels
+  ) +
+  theme_gray()
 
 #2. Total Counts for each taxonomic group
-tax_species_counts <- final_set %>%
+tax_species_counts <- coast_str02 %>%
   group_by(tax_group) %>%
   summarise(Count = n(), .groups = "drop") 
 
-custom_colors <- c("#D81B60", "#1E88E5", "#FFC107", "#004D40") #creating color-blind friendly pallete for strandings
+custom_colors <- c("#D81B60", "mediumblue", "#FFC107", "#004D40") #creating color-blind friendly pallete for strandings
 
 tax_count <- ggplot(tax_species_counts, aes(x = tax_group, y = Count, fill = tax_group)) +
   geom_col() +
   scale_fill_manual(values = custom_colors, labels = c("Mysticeti (baleen whales)", "Odontocetes (toothed whales)","Pinnipeds (seals/sea lions)", "Unidentified")) + #assign colors to each taxonomic group and change the labels for the legend
-  geom_text(aes(label = tax_group), vjust = -0.5, size = 3) + #adds name to bars
+  geom_text(aes(label = Count), vjust = -0.5, size = 7, color = "black") + #adds count to bars
   labs(
        x = "Taxonomic Group", 
        y = "Number of Observed Strandings", fill = "Taxonomic Group") +
   theme(legend.position = "none",
-        legend.text = element_text(size = 8), 
-        #plot.title = element_text(color = "black", size = 10),      # Title color and size
-        axis.title.x = element_text(color = "black", size = 7),   # X-axis title
-        axis.title.y = element_text(color = "black", size = 7),   # Y-axis title
-        axis.text = element_text(size = 0), # Axis tick labels
+        legend.text = element_text(size = 1), 
+        axis.title.x = element_text(color = "black", size = 24),   # X-axis title
+        axis.title.y = element_text(color = "black", size = 24),   # Y-axis title
+        axis.text = element_text(color = "black", size = 20), # Axis tick labels
         #legend.key.size = unit(0.3, "cm") #legend size
   )
+
+ggsave("/Users/ebell23/Github/NOAA Stranding Data 1996-2022/NOAA Strandings Graphs/OSM Graphs/taxct_plot.png", plot = tax_count, dpi = 500)
+
 
 #combine map and chart
 library(patchwork)
