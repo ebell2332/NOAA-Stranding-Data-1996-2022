@@ -121,6 +121,99 @@ ggplot(plot_df,
 
 
 ####5. Taxonomic group####
+#Map Taxonomic group as 4 separate maps
+#1. Mysticeti
+
+mys <- coast_str02 %>%
+  filter(tax_group == "Mysticeti") %>%
+  group_by(year_of_observation, lat, lon) %>%
+  summarise(Count = n(), .groups = "drop")
+
+mys_map <- ggplot() +
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = "gray85", color = "black") +
+  geom_point(data = mys, aes(x = lon, y = lat), size = 2, color = "black") +
+  labs(x = NULL, y = "Latitude", subtitle = "A) Mysticeti") +
+  theme(
+    #legend.text = element_text(size = 20), 
+    #legend.title = element_text(size = 22),
+    #plot.title = element_text(hjust = 0.5, color = "black", size = 24),      # Title color and size
+    #axis.title.x = element_text(color = "black", size = 24),   # X-axis title
+    #axis.title.y = element_text(color = "black", size = 24),   # Y-axis title
+    #axis.text = element_text(size = 22, color = "black"),      # Axis tick labels
+    panel.grid.major = element_blank(), # Remove major grid lines
+    panel.grid.minor = element_blank(), # Remove minor grid lines
+  ) 
+
+#2. Odontocetes
+odo <- coast_str02 %>%
+  filter(tax_group == "Odontocetes") %>%
+  group_by(year_of_observation, lat, lon) %>%
+  summarise(Count = n(), .groups = "drop")
+
+odo_map <- ggplot() +
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = "gray85", color = "black") +
+  geom_point(data = odo, aes(x = lon, y = lat), size = 2, color = "black") +
+  labs(x = NULL, y = NULL, subtitle = "B) Odontocetes") +
+  theme(
+    #legend.text = element_text(size = 20), 
+    #legend.title = element_text(size = 22),
+    #plot.title = element_text(hjust = 0.5, color = "black", size = 24),      # Title color and size
+    #axis.title.x = element_text(color = "black", size = 24),   # X-axis title
+    #axis.title.y = element_text(color = "black", size = 24),   # Y-axis title
+    #axis.text = element_text(size = 22, color = "black"),      # Axis tick labels
+    panel.grid.major = element_blank(), # Remove major grid lines
+    panel.grid.minor = element_blank(), # Remove minor grid lines
+  ) 
+
+#3. Pinnipeds
+pin <- coast_str02 %>%
+  filter(tax_group == "Pinnipeds") %>%
+  group_by(year_of_observation, lat, lon) %>%
+  summarise(Count = n(), .groups = "drop")
+
+pin_map <- ggplot() +
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = "gray85", color = "black") +
+  geom_point(data = pin, aes(x = lon, y = lat), size = 2, color = "black") +
+  labs(x = "Longitude", y = "Latitude", subtitle = "C) Pinnipeds ") +
+  theme(
+    #legend.text = element_text(size = 20), 
+    #legend.title = element_text(size = 22),
+    #plot.title = element_text(hjust = 0.5, color = "black", size = 24),      # Title color and size
+    #axis.title.x = element_text(color = "black", size = 24),   # X-axis title
+    #axis.title.y = element_text(color = "black", size = 24),   # Y-axis title
+    #axis.text = element_text(size = 22, color = "black"),      # Axis tick labels
+    panel.grid.major = element_blank(), # Remove major grid lines
+    panel.grid.minor = element_blank(), # Remove minor grid lines
+  )  
+
+#4. Unidentified
+uni <- coast_str02 %>%
+  filter(tax_group == "Unidentified") %>%
+  group_by(year_of_observation, lat, lon) %>%
+  summarise(Count = n(), .groups = "drop")
+
+uni_map <- ggplot() +
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = "gray85", color = "black") +
+  geom_point(data = uni, aes(x = lon, y = lat), size = 2, color = "black") +
+  labs(x = "Longitude", y = NULL, subtitle = "D) Unidentified") +
+  theme(
+    #legend.text = element_text(size = 20), 
+    #legend.title = element_text(size = 22),
+    #plot.title = element_text(hjust = 0.5, color = "black", size = 24),      # Title color and size
+    #axis.title.x = element_text(color = "black", size = 24),   # X-axis title
+    #axis.title.y = element_text(color = "black", size = 24),   # Y-axis title
+    #axis.text = element_text(size = 22, color = "black"),      # Axis tick labels
+    panel.grid.major = element_blank(), # Remove major grid lines
+    panel.grid.minor = element_blank(), # Remove minor grid lines
+  ) 
+
+library(patchwork)
+(mys_map + odo_map) / (pin_map + uni_map)
+
 #Strandings by year and taxonomic group overalyed together
 
 total <- final_set %>%
