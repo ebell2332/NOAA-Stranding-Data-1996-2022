@@ -32,385 +32,6 @@ str_1996 <- coast_str %>% filter(Year_num == 1996)
 str_2009 <- coast_str %>% filter(Year_num == 2009)
 str_2022 <- coast_str %>% filter(Year_num == 2022)
 
-#Filter NARW- Policy years 
-#------
-  #1996
-narw_1996 <- shape_simple1 %>% filter(PolCategor == "NARW-specific", Year_Impl == 1996)
-
-ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = NA, color = "black") +
-  geom_sf(data = grid, color = "black") +
-  geom_point(data = str_1996, aes(x = lon, y = lat), size = 1, color = "lightgrey", fill = NA) +
-  geom_sf(data = narw_1996, color = "darkblue", fill = NA, size = 1) + 
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  #geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  labs(title = "Strandings during NARW-specific policies in 1996",
-       x = "Longitude", y = "Latitude") +
-  theme_light()
-
-  #2009
-narw_2009 <- shape_simple1 %>% filter(PolCategor == "NARW-specific", Year_Impl == 2009)
-
-ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = NA, color = "black") +
-  geom_point(data = str_2009, aes(x = lon, y = lat), size = 1, color = "lightgrey") +
-  geom_sf(data = narw_2009, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  #coord_fixed(1.3) +
-  scale_color_manual(values = "black") +
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  labs(title = "Strandings during NARW-specific policies in 2009",
-       x = "Longitude", y = "Latitude") +
-  theme_light()
-
-  #2022
-narw_2022 <- shape_simple1 %>% filter(PolCategor == "NARW-specific", Year_Impl == 2022)
-
-ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = NA, color = "black") +
-  geom_point(data = str_2022, aes(x = lon, y = lat), size = 1, color = "lightgrey") +
-  geom_sf(data = narw_2022, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  #coord_fixed(1.3) +
-  #geom_point(data = coast_str, aes(x = lon, y = lat), size = 1) +
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  labs(title = "Strandings during NARW-specific policies in 2022",
-       x = "Longitude", y = "Latitude") +
-  theme_light()
-
-
-
-#Filter during TRP years
- 
-  #-----
-#1996
-trp_1996 <- shape_simple1 %>% filter(PolCategor == "TRP", Year_Impl == 1996)
-str_1996 <- coast_str %>% filter(Year_num == 1996)
-
-trp4 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_1996, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = trp_1996, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-
-
-  #2009
-trp_2009 <- shape_simple1 %>% filter(PolCategor == "TRP", Year_Impl == 2009)
-str_2009 <- coast_str %>% filter(Year_num == 2009)
-
-trp5 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_2009, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = trp_2009, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-
-  #2022
-trp_2022 <- shape_simple1 %>% filter(PolCategor == "TRP", Year_Impl == 2022)
-str_2022 <- coast_str %>% filter(Year_num == 2022)
-
-trp6 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_2022, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = trp_2022, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-
-library(patchwork)
-(trp1 + trp3 + trp4 + trp6) + plot_layout(ncol = 2)
-
-#Gear Restrictions and years Filtered 
-  #----
-  #1996
-gear_1996 <- shape_simple1 %>% filter(PolCategor == "Gear-related", Year_Impl == 1996)
-
-gear1 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_1996, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = gear_1996, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-  
-gear1
-
-  #2009
-gear_2009 <- shape_simple1 %>% filter(PolCategor == "Gear-related", , Start_yr <= 2009, End_yr >= 2009)
-
-gear2 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_2009, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = gear_2009, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-  
-gear2
-
-  #2022-no gear policies implemented this year
-gear_2022 <- shape_simple1 %>% filter(PolCategor == "Gear-related", Year_Impl == 2022)
-
-gear3 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_2022, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = gear_2022, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-
-gear3
-
-
-#MPA Policies
-  #----
-#1996
-mpa_1996 <- shape_simple1 %>% filter(PolCategor == "MPA", Year_Impl == 1996)
-
-mpa1 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_1996, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = mpa_1996, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-
-mpa1
-
-  #2009
-mpa_2009 <- shape_simple1 %>% filter(PolCategor == "MPA", Year_Impl == 2009)
-
-mpa2 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_2009, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = mpa_2009, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-
-mpa2
-
-  #2022
-mpa_2022 <- shape_simple1 %>% filter(PolCategor == "MPA", Year_Impl == 2022)
-
-mpa3 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_2022, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = mpa_2022, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-
-mpa3
-
-#Closed Area Policies
-  #----
-  #1996-none implemented
-ca_1996 <- shape_simple1 %>% filter(PolCategor == "Closed Area", Year_Impl == 1996)
-
-ca1 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_1996, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = mpa_1996, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-
-ca1
-
-  #2009-none implemented
-ca_2009 <- shape_simple1 %>% filter(PolCategor == "Closed Area", Start_yr <= 2009, End_yr >= 2009)
-
-ca2 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_2009, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = ca_2009, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-
-ca2
-
-  #2022-none implemented
-ca_2022 <- shape_simple1 %>% filter(PolCategor == "Closed Area", Year_Impl == 2022)
-
-ca3 <- ggplot() +
-  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
-               fill = "lightgrey", color = "black") +
-  geom_point(data = str_2022, aes(x = lon, y = lat), size = 1, color = "black") +
-  geom_sf(data = mpa_2022, aes(fill = PolCategor), color = "darkblue", fill = NA, size = 1) + 
-  #scale_fill_manual(values = "darkblue") +
-  coord_sf(xlim = c(-80.6, -65.80), ylim = c(36.5, 47)) + #adjusts the zoom
-  geom_text_repel(data = state_centroids, aes(x = long, y = lat, label = state_abb), size = 4, force = 1) + #adds state abbreviations to middle of state
-  theme(
-    legend.position = "bottom", 
-    plot.title = element_text(color = "black", size = 15),      # Title color and size
-    axis.title.x = element_text(color = "black", size = 14),   # X-axis title
-    axis.title.y = element_text(color = "black", size = 14),   # Y-axis title
-    axis.text = element_text(size = 10),      # Axis tick labels
-    #panel.grid.major = element_blank(), # Remove major grid lines
-    #panel.grid.minor = element_blank(), # Remove minor grid lines
-  ) +
-  theme_light()
-
-ca3
-
 #------
 #Gear-related years----
 strand <- coast_str %>% 
@@ -453,16 +74,23 @@ grid1 <- ggplot() +
   coord_sf(xlim = c(-79, -66), ylim = c(36.5, 46)) + #zooms into the map more
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
+  scale_y_continuous(breaks = seq(38, 46, by = 4), labels = scales::label_number(suffix = "°N")) +
   labs(
-    title = "1996",
-    x = "Longitude", y = "Latitude"
+    subtitle = "1996",
+    x = NULL, y = "Latitude"
   ) +
   theme_light() +
   theme(
     legend.position = "none",
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+    panel.grid.minor = element_blank(),
+    plot.subtitle = element_text(size = 17, color = "black"),
+      axis.title.x = element_blank(),   # X-axis title
+      axis.title.y = element_text(color = "black", size = 17),   # Y-axis title
+      axis.text.y  = element_text(size = 15, color = "black"),      # Axis tick labels
+      axis.ticks.x = element_blank(),
+      axis.text.x = element_blank()
+    ) 
 
 #Gear-related in 2009
 strand2 <- coast_str %>% 
@@ -503,15 +131,21 @@ grid2 <- ggplot() +
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
   labs(
-    title = "2009",
-    x = "Longitude", y = "Latitude"
+    subtitle = "2009",
+    x = NULL, y = NULL
   ) +
   theme_light() +
   theme(
     legend.position = "none",
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+    panel.grid.minor = element_blank(),
+    plot.subtitle = element_text(size = 17, color = "black"),
+    axis.title.x = element_blank(),   # X-axis title
+    axis.title.y = element_blank(),   # Y-axis title
+    axis.text.y  = element_blank(),      # Axis tick labels
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  ) 
 
   #Gear-related in 2022
 strand3 <- coast_str %>% 
@@ -552,24 +186,30 @@ grid3 <- ggplot() +
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
   labs(
-    title = "2022",
-    x = "Longitude", y = "Latitude"
+    subtitle = "2022",
+    x = NULL, y = NULL
   ) +
   theme_light() +
   theme(
     legend.position = "none",
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+    panel.grid.minor = element_blank(),
+    plot.subtitle = element_text(size = 17, color = "black"),
+    axis.title.x = element_blank(),   # X-axis title
+    axis.title.y = element_blank(),   # Y-axis title
+    axis.text.y  = element_blank(),      # Axis tick labels
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  ) 
 
   #Combine all 3 maps into 1
 library(patchwork)
 gear_maps <- (grid1 + grid2 + grid3) +
 plot_annotation(
   title = 'Strandings in active Gear-related policy areas',
-  theme = theme(plot.title = element_text(size = 18, hjust = 0.5))
+  theme = theme(plot.title = element_text(size = 19, hjust = 0.5))
 )
-
+gear_maps
 
 #MPA by years----
   #1996
@@ -604,16 +244,23 @@ grid10 <- ggplot() +
   coord_sf(xlim = c(-79, -66), ylim = c(36.5, 46)) + #zooms into the map more
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
+  scale_x_continuous(breaks = seq(-78, -66, by = 6), labels = scales::label_number(suffix = "°W")) +
+  scale_y_continuous(breaks = seq(38, 46, by = 4), labels = scales::label_number(suffix = "°N")) +
+  
   labs(
-    title = "1996",
+    subtitle = "1996",
     x = "Longitude", y = "Latitude"
-  ) +
+) +
   theme_light() +
-  theme(
-    legend.position = "none",
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+  plot.subtitle = element_text(size = 17, color = "black"),
+  axis.title.x = element_text(color = "black", size = 17),   # X-axis title
+  axis.title.y = element_text(color = "black", size = 17),   # Y-axis title
+  axis.text.y  = element_text(size = 15, color = "black"),      # Axis tick labels
+  axis.text.x = element_text(color = "black", size = 15)
+) 
+
 
   #2009
 yr_keep1 <- 2009
@@ -648,16 +295,21 @@ grid11 <- ggplot() +
   coord_sf(xlim = c(-79, -66), ylim = c(36.5, 46)) + #zooms into the map more
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
+  scale_x_continuous(breaks = seq(-78, -66, by = 6), labels = scales::label_number(suffix = "°W")) +
   labs(
-    title = "2009",
-    x = "Longitude", y = "Latitude"
+    subtitle = "2009",
+    x = "Longitude", y = NULL
   ) +
   theme_light() +
-  theme(
-    legend.position = "none",
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+    plot.subtitle = element_text(size = 17, color = "black"),
+    axis.title.x = element_text(color = "black", size = 17),   # X-axis title
+    axis.title.y = element_blank(),   # Y-axis title
+    axis.text.y  = element_blank(), # Axis tick labels
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_text(color = "black", size = 15)
+  ) 
 
   #2022
 yr_keep2 <- 2022
@@ -691,25 +343,30 @@ grid12 <- ggplot() +
   coord_sf(xlim = c(-79, -66), ylim = c(36.5, 46)) + #zooms into the map more
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
+  scale_x_continuous(breaks = seq(-78, -66, by =4), labels = scales::label_number(suffix = "°W")) +
   labs(
-    title = "2022",
-    x = "Longitude", y = "Latitude"
+    subtitle = "2022",
+    x = "Longitude", y = NULL
   ) +
   theme_light() +
-  theme(
-    legend.position = "none",
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+    plot.subtitle = element_text(size = 17, color = "black"),
+    axis.title.x = element_text(color = "black", size = 17),   # X-axis title
+    axis.title.y = element_blank(),   # Y-axis title
+    axis.text.y  = element_blank(), # Axis tick labels
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_text(color = "black", size = 15)
+  ) 
 
 mpa_maps <- (grid10 + grid11 + grid12) +
   plot_annotation(
     title = 'Strandings in active Marine Protected Areas',
-    theme = theme(plot.title = element_text(size = 18, hjust = 0.5))
+    theme = theme(plot.title = element_text(size = 19, hjust = 0.5))
   )
+mpa_maps
 
-
-
+gear_maps / mpa_maps
 
 #TRP by years----
 #1996
@@ -744,16 +401,22 @@ grid4 <- ggplot() +
   coord_sf(xlim = c(-79, -66), ylim = c(36.5, 46)) + #zooms into the map more
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
+  scale_y_continuous(breaks = seq(38, 46, by = 4), labels = scales::label_number(suffix = "°N")) +
   labs(
-    title = "1996",
-    x = "Longitude", y = "Latitude"
+    subtitle = "1996",
+    x = NULL, y = "Latitude"
   ) +
   theme_light() +
   theme(
-    legend.position = "none",
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+    panel.grid.minor = element_blank(),
+    plot.subtitle = element_text(size = 17, color = "black"),
+        axis.title.x = element_blank(),   # X-axis title
+        axis.title.y = element_text(color = "black", size = 17),   # Y-axis title
+        axis.text.y  = element_text(size = 15, color = "black"),      # Axis tick labels
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank()
+  ) 
 
 
 #2009
@@ -790,15 +453,21 @@ grid5 <- ggplot() +
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
   labs(
-    title = "2009",
-    x = "Longitude", y = "Latitude"
+    subtitle = "2009",
+    x = NULL, y = NULL
   ) +
   theme_light() +
   theme(
     legend.position = "none",
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+    panel.grid.minor = element_blank(),
+    plot.subtitle = element_text(size = 17, color = "black"),
+    axis.title.x = element_blank(),   # X-axis title
+    axis.title.y = element_blank(),   # Y-axis title
+    axis.text.y  = element_blank(),      # Axis tick labels
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  ) 
 
 
 #2022
@@ -834,22 +503,30 @@ grid6 <- ggplot() +
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
   labs(
-    title = "2022",
-    x = "Longitude", y = "Latitude"
+    subtitle  = "2022",
+    x = NULL, y = NULL
   ) +
   theme_light() +
   theme(
     legend.position = "none",
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+    panel.grid.minor = element_blank(),
+    plot.subtitle = element_text(size = 17, color = "black"),
+    axis.title.x = element_blank(),   # X-axis title
+    axis.title.y = element_blank(),   # Y-axis title
+    axis.text.y  = element_blank(),      # Axis tick labels
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  ) 
 
 library(patchwork)
 trp_maps <- (grid4 + grid5 + grid6) +
   plot_annotation(
     title = 'Strandings in active Take Reduction Plan areas',
-    theme = theme(plot.title = element_text(size = 18, hjust = 0.5))
+    theme = theme(plot.title = element_text(size = 19, hjust = 0.5))
   )
+trp_maps
+
 
 #NARW by years----
 yr_keep <- 1996
@@ -883,16 +560,22 @@ grid7 <- ggplot() +
   coord_sf(xlim = c(-79, -66), ylim = c(36.5, 46)) + #zooms into the map more
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
+  scale_y_continuous(breaks = seq(38, 46, by = 4), labels = scales::label_number(suffix = "°N")) +
   labs(
-    title = "1996",
-    x = "Longitude", y = "Latitude"
+    subtitle = "1996",
+    x = NULL, y = "Latitude"
   ) +
   theme_light() +
-  theme(
-    legend.position = "none",
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+  plot.subtitle = element_text(size = 17, color = "black"),
+axis.title.x = element_blank(),   # X-axis title
+axis.title.y = element_text(color = "black", size = 17),   # Y-axis title
+axis.text.y  = element_text(size = 15, color = "black"),      # Axis tick labels
+axis.ticks.x = element_blank(),
+axis.text.x = element_blank()
+) 
+
 
 
   #2009
@@ -928,15 +611,22 @@ grid8 <- ggplot() +
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
   labs(
-    title = "2022",
-    x = "Longitude", y = "Latitude"
+    subtitle = "2009",
+    x = NULL , y = NULL
   ) +
   theme_light() +
-  theme(
-    legend.position = "none",
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+    theme(
+      legend.position = "none",
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      plot.subtitle = element_text(size = 17, color = "black"),
+      axis.title.x = element_blank(),   # X-axis title
+      axis.title.y = element_blank(),   # Y-axis title
+      axis.text.y  = element_blank(),      # Axis tick labels
+      axis.ticks.x = element_blank(),
+      axis.text.x = element_blank()
+    ) 
+    
 
   #2022
 yr_keep2 <- 2022
@@ -971,34 +661,39 @@ grid9 <- ggplot() +
   geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
                fill = "grey", color = "black") +
   labs(
-    title = "2022",
-    x = "Longitude", y = "Latitude"
+    subtitle = "2022",
+    x = NULL , y = NULL
   ) +
   theme_light() +
   theme(
     legend.position = "none",
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-
+    panel.grid.minor = element_blank(),
+    plot.subtitle = element_text(size = 17, color = "black"),
+    axis.title.x = element_blank(),   # X-axis title
+    axis.title.y = element_blank(),   # Y-axis title
+    axis.text.y  = element_blank(),      # Axis tick labels
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  ) 
 library(patchwork)
 narw_maps <- (grid7 + grid8 + grid9) +
   plot_annotation(
     title = 'Strandings in active NARW-specific policy areas',
-    theme = theme(plot.title = element_text(size = 18, hjust = 0.5))
+    theme = theme(plot.title = element_text(size = 19, hjust = 0.5))
   )
 
 
-ggsave("narw_maps.png", plot = narw_maps, dpi = 500)
+ggsave("/Users/ebell23/Downloads/narw_maps.png", plot = row2, dpi = 500)
 
-ggsave("mpa_maps.png", plot = mpa_maps, dpi = 500)
+ggsave("/Users/ebell23/Downloads/mpa_maps.png", plot = row4, dpi = 500)
 
-ggsave("gear_maps.png", plot = gear_maps, dpi = 500)
+ggsave("/Users/ebell23/Downloads/gear_maps.png", plot = row3, dpi = 500)
 
-ggsave("trp_maps.png", plot = trp_maps, dpi = 500)
+ggsave("/Users/ebell23/Downloads/trp_maps.png", plot = row1, dpi = 500)
 
 
-
+narw_maps
 
 #Closed Areas by years----
   #1996
@@ -1143,4 +838,170 @@ library(patchwork)
 
 
 (trp_maps / narw_maps / gear_maps / mpa_maps) 
+
+
+
+
+#Combining all maps together into 1 large plot----
+row1 <- wrap_elements(full = trp_maps +  plot_annotation(title = "Strandings in active Take Reduction Plan areas",theme = theme(plot.title = element_text(size = 18, hjust = 0.5))))
+
+row2 <- wrap_elements(full = narw_maps + plot_annotation(title = "Strandings in active NARW-specific policy areas", theme = theme(plot.title = element_text(size = 18, hjust = 0.50))))
+
+row3 <- wrap_elements(full = gear_maps + plot_annotation(title = "Strandings in active Gear-related policy areas", theme = theme(plot.title = element_text(size = 18, hjust = 0.50))))
+
+row4 <- wrap_elements(full = mpa_maps + plot_annotation(title = "Strandings in active Marine Protected Areas", theme = theme(plot.title = element_text(size = 18, hjust = 0.50))))
+
+row1 / row2 / row3 / row4
+
+trp_maps/narw_maps/gear_maps
+
+row3/row4
+row1/row2
+
+
+
+
+
+
+#NARW by years----
+yr_keep <- 1996
+cat_keep <- "NARW-specific"
+
+grid_fixed <- grid %>%
+  mutate(grid_id = as.character(grid_id))
+
+grid_pol_year <- grid_str %>%
+  mutate(grid_id = as.character(grid_id),
+         polcat_list = as.character(PolCat_List))
+
+pol_narw_1996 <- grid_pol_year %>%
+  filter(Year_num == yr_keep) %>%
+  separate_rows(PolCat_List, sep = ";") %>%
+  mutate(PolCat_List = str_trim(PolCat_List)) %>%
+  group_by(grid_id) %>%
+  summarise(has_policy = as.integer(any(PolCat_List == "NARW-specific")), .groups = "drop")
+
+grid_narw_1996 <- grid %>%
+  left_join(pol_narw_1996, by = "grid_id") %>%
+  mutate(has_policy = if_else(is.na(has_policy), 0L, has_policy))
+
+grid7 <- ggplot() +
+  geom_sf(data = grid_narw_1996, fill = NA, color = "grey65", linewidth = 0.15) +
+  geom_sf(
+    data = grid_narw_1996 %>% filter(has_policy == 1),
+    fill = "steelblue", color = NA, alpha = 0.6
+  ) +
+  geom_sf(data = strand, size = 0.1, color = "grey8", fill = "NA") +
+  coord_sf(xlim = c(-79, -66), ylim = c(36.5, 46)) + #zooms into the map more
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = "grey", color = "black") +
+  labs(
+    title = "1996",
+    x = "Longitude", y = "Latitude"
+  ) +
+  theme_light() +
+  theme(
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+
+#2009
+yr_keep1 <- 2009
+cat_keep <- "NARW-specific"
+
+grid_fixed <- grid %>%
+  mutate(grid_id = as.character(grid_id))
+
+grid_pol_year <- grid_str %>%
+  mutate(grid_id = as.character(grid_id),
+         polcat_list = as.character(PolCat_List))
+
+pol_narw_2009 <- grid_pol_year %>%
+  filter(Year_num == yr_keep1) %>%
+  separate_rows(PolCat_List, sep = ";") %>%
+  mutate(PolCat_List = str_trim(PolCat_List)) %>%
+  group_by(grid_id) %>%
+  summarise(has_policy = as.integer(any(PolCat_List == "NARW-specific")), .groups = "drop")
+
+grid_narw_2009 <- grid %>%
+  left_join(pol_narw_2009, by = "grid_id") %>%
+  mutate(has_policy = if_else(is.na(has_policy), 0L, has_policy))
+
+grid8 <- ggplot() +
+  geom_sf(data = grid_narw_2009, fill = NA, color = "grey65", linewidth = 0.15) +
+  geom_sf(
+    data = grid_narw_2009 %>% filter(has_policy == 1),
+    fill = "steelblue", color = NA, alpha = 0.6
+  ) +
+  geom_sf(data = strand, size = 0.1, color = "grey8", fill = "NA") +
+  coord_sf(xlim = c(-79, -66), ylim = c(36.5, 46)) + #zooms into the map more
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = "grey", color = "black") +
+  labs(
+    title = "2009",
+    x = "Longitude", y = "Latitude"
+  ) +
+  theme_light() +
+  theme(
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+#2022
+yr_keep2 <- 2022
+cat_keep <- "NARW-specific"
+
+grid_fixed <- grid %>%
+  mutate(grid_id = as.character(grid_id))
+
+grid_pol_year <- grid_str %>%
+  mutate(grid_id = as.character(grid_id),
+         polcat_list = as.character(PolCat_List))
+
+pol_narw_2022 <- grid_pol_year %>%
+  filter(Year_num == yr_keep2) %>%
+  separate_rows(PolCat_List, sep = ";") %>%
+  mutate(PolCat_List = str_trim(PolCat_List)) %>%
+  group_by(grid_id) %>%
+  summarise(has_policy = as.integer(any(PolCat_List == "NARW-specific")), .groups = "drop")
+
+grid_narw_2022 <- grid %>%
+  left_join(pol_narw_2022, by = "grid_id") %>%
+  mutate(has_policy = if_else(is.na(has_policy), 0L, has_policy))
+
+grid9 <- ggplot() +
+  geom_sf(data = grid_narw_2022, fill = NA, color = "grey65", linewidth = 0.15) +
+  geom_sf(
+    data = grid_narw_2022 %>% filter(has_policy == 1),
+    fill = "steelblue", color = NA, alpha = 0.6
+  ) +
+  geom_sf(data = strand, size = 0.1, color = "grey8", fill = "NA") +
+  coord_sf(xlim = c(-79, -66), ylim = c(36.5, 46)) + #zooms into the map more
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = "grey", color = "black") +
+  labs(
+    title = "2022",
+    x = "Longitude", y = "Latitude"
+  ) +
+  theme_light() +
+  theme(
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+library(patchwork)
+narw_maps <- (grid7 + grid8 + grid9) +
+  plot_annotation(
+    title = 'Strandings in active NARW-specific policy areas',
+    theme = theme(plot.title = element_text(size = 18, hjust = 0.5))
+  )
+
+row04 <- wrap_elements(full = mpa_maps + plot_annotation(title = "Strandings in active Marine Protected Areas", theme = theme(plot.title = element_text(size = 18, hjust = 0.50))))
+
+ggsave("/Users/ebell23/Downloads/narw_maps.png", plot = narw_maps, dpi = 500)
+
 
