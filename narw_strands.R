@@ -7,6 +7,7 @@ narw_strands <- read_excel("/Users/ebell23/Downloads/narw_strandsTable.xlsx")
 narw_str <- narw_strands %>% 
   st_as_sf(coords = c("lon", "lat"), crs = 4326) #keeping all stranding years
 
+length(unique(narw_strands$OBJECTID)) #counts all the unique objectID = 47 total narw strandiings
 
 grid_cells <- st_read("/Users/ebell23/Downloads/grid_25kmClip_ExportFeatures.shp", quiet = TRUE)
 #grid_fixed <- st_set_crs(grid_cells, 5070) 
@@ -15,6 +16,26 @@ grid <- st_transform(grid_cells, 4326)
 #grid_id x year
 grid_str <- read_excel("/Users/ebell23/Downloads/grid25_strand_pol_all.xlsx")
 sum(tapply(grid_str$n_strandings, grid_str$grid_id, sum) == 0) #total number of grid_ids where stranding count = 0 
+
+#Map only NARW Strandings
+#1. NARW strandings
+
+narw <- narw_strands %>%
+  group_by(year_of_observation, lat, lon) %>%
+  summarise(Count = n(), .groups = "drop")
+
+narw_map <- ggplot() +
+  geom_polygon(data = east_coast_map, aes(x = long, y = lat, group = group),
+               fill = "gray85", color = "black") +
+  geom_point(data = narw, aes(x = lon, y = lat), size = 2, color = "black") +
+  labs(title = "North Atlantic right whale strandings", x = "Longitude (°W)", y = "Latitude(°N)") +
+  theme(
+    axis.title = element_text(size = 17, color = "black"),
+    axis.text = element_text(size = 15, color = "black"),
+    plot.title = element_text(size = 20, color = "black"),
+    panel.grid = element_blank()
+  ) 
+   
 
 #Filter Policy datasets to specific years for NARW-policies and map individually----
 #1996
