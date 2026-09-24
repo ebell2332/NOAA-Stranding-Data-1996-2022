@@ -4,6 +4,14 @@ colnames(sum_table)
 sum_table <- sum_table %>%
   replace_na(list(Closed_Area = 0, Gear_related = 0, TRP = 0, MPA = 0, NARW_specific = 0, Mysticeti = 0, Pinnipeds = 0, Odontocetes = 0, Unidentified = 0)) #replace all NA with 0s
 
+#save sum_table with 0s instead of 1s -- saved
+write.csv(
+  sum_table,
+  file = "/Users/ebell23/Downloads/25x25_mast_table.csv",
+  row.names = FALSE
+)
+  #new file name is 25x25_mast_table
+
 library(dplyr)
 library(purrr)
 
