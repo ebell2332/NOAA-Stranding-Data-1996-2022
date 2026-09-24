@@ -18,7 +18,7 @@ grid_filtered <- grids_map %>%
     geometry
   )
 
-# Write as a new shapefile
+# Write as a new shapefile -- saved
 st_write(
   grid_filtered,
   "/Users/ebell23/Downloads/filtered_grid.shp",
@@ -82,7 +82,7 @@ odon_map_ct <- sum_table %>%
 odon_map_ct <- odon_map_ct %>%
   mutate(grid_id = as.numeric(grid_id))
 
-odo_ct_data <- grids_filt_uni %>%
+odo_ct_data <- grid_filt_row %>%
   left_join(odon_map_ct, by = "grid_id")
 
 
@@ -105,3 +105,20 @@ odo_ct_data <- grids_filt_uni %>%
   ) +
   theme_void()
 
+ #double checking newly saved shapefile matches
+ grids_filt <- st_read("/Users/ebell23/Downloads/filtered_grid.shp")
+nrow(grids_filt) 
+colnames(grids_filt)
+
+grid_filt_row <- grids_filt %>% #makes it one grid per row instead of by year
+  group_by(grid_id) %>%
+  slice(1) %>%
+  ungroup()
+
+ggplot() +
+  geom_sf(data = grid_filt_row, fill = NA, color = "black") +
+  geom_sf(
+    data = east_coast,
+    fill = NA,
+    color = "black") +
+  theme_void()
