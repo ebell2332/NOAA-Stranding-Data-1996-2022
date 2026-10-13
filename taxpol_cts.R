@@ -1,16 +1,18 @@
-sum_table <- read_excel("/Users/ebell23/Downloads/in6_grid25x25km_masttable.xlsx")
+sum_table <- read.csv("/Users/ebell23/Downloads/25x25_master_table.csv")
 colnames(sum_table)
 
 sum_table <- sum_table %>%
   replace_na(list(Closed_Area = 0, Gear_related = 0, TRP = 0, MPA = 0, NARW_specific = 0, Mysticeti = 0, Pinnipeds = 0, Odontocetes = 0, Unidentified = 0)) #replace all NA with 0s
 
 #save sum_table with 0s instead of 1s -- saved
+sum_table$Closed_Area <- as.integer(sum_table$Closed_Area) #changing closed areas information from true/false to 0/1
+
 write.csv(
   sum_table,
   file = "/Users/ebell23/Downloads/25x25_mast_table.csv",
   row.names = FALSE
 )
-  #new file name is 25x25_mast_table
+  #new file name is 25x25_master_table
 
 library(dplyr)
 library(purrr)
@@ -33,7 +35,7 @@ east_coast <- states %>%
   filter(NAME %in% c("Maine", "New Hampshire", "Vermont", "Massachusetts", "Rhode Island","Connecticut", "New York", "New Jersey", "Pennsylvania", "Delaware", "Maryland", "District of Columbia", "Virginia")
   )
 
-#Mapping each Taxonomic group by count and grid_id
+#A. Mapping each Taxonomic group by count and grid_id----
 
 #1. All taxonomic groups together using facet wrap
 #mapping each taxonomic group by count and using facet wrap with a single legend
@@ -81,7 +83,46 @@ ggplot(map_tax_ct) +
   ) +
   theme_void()
 
-#1a. mapping counts by taxonomic grou
+
+
+  #1 map of all stranding counts
+str_all <- sum_table %>%
+  group_by(grid_id) %>%
+  summarise(
+    strand_count = sum(
+      Mysticetes, Odontocetes, Pinnipeds,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  )
+
+str_all <- str_all %>%
+  mutate(grid_id = as.numeric(grid_id))
+
+map_str_all <- grids_uni %>%
+  left_join(str_all, by = "grid_id")
+
+
+str_map <- ggplot() +
+  geom_sf(data = map_str_all, 
+          aes(fill = strand_count),
+          color = NA
+  ) +
+  scale_fill_gradient(
+    low = "plum",
+    high = "purple3",
+    name = "Number of strandings",
+    na.value = "grey90"
+  ) +
+  geom_sf(
+    data = east_coast,
+    fill = NA,
+    color = "grey90"
+  ) +
+  theme_void()
+
+
+#1a. mapping counts by taxonomic group
 #Odontocetes
 
 odon_map_ct <- sum_table %>%
@@ -105,15 +146,15 @@ odon_ct <- ggplot() +
     color = NA
   ) +
   scale_fill_gradient(
-    low = "lightblue",
-    high = "darkblue",
+    low = "plum",
+    high = "purple3",
     name = "Odontocetes\nstrandings",
     na.value = "grey90"
   ) +
   geom_sf(
     data = east_coast,
     fill = NA,
-    color = "black"
+    color = "grey90"
   ) +
   theme_void()
 
@@ -121,7 +162,7 @@ odon_ct <- ggplot() +
 mys_map_ct <- sum_table %>%
   group_by(grid_id) %>%
   summarise(
-    Mysticeti = sum(Mysticeti, na.rm = TRUE),
+    Mysticetes = sum(Mysticetes, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -135,19 +176,19 @@ mys_ct_data <- grids_uni %>%
 mys_ct <- ggplot() +
   geom_sf(
     data = mys_ct_data,
-    aes(fill = Mysticeti),
+    aes(fill = Mysticetes),
     color = NA
   ) +
   scale_fill_gradient(
-    low = "lightblue",
-    high = "darkblue",
-    name = "Mysticeti\nstrandings",
+    low = "plum",
+    high = "purple3",
+    name = "Mysticetes\nstrandings",
     na.value = "grey90"
   ) +
   geom_sf(
     data = east_coast,
     fill = NA,
-    color = "black"
+    color = "grey90"
   ) +
   theme_void()
 
@@ -173,15 +214,15 @@ pin_ct <- ggplot() +
     color = NA
   ) +
   scale_fill_gradient(
-    low = "lightblue",
-    high = "darkblue",
+    low = "plum",
+    high = "purple3",
     name = "Pinnipeds\nstrandings",
     na.value = "grey90"
   ) +
   geom_sf(
     data = east_coast,
     fill = NA,
-    color = "black"
+    color = "grey90"
   ) +
   theme_void()
 
@@ -190,7 +231,7 @@ library(patchwork)
 
 odon_ct + mys_ct + pin_ct
 
-#Mapping each policy by count and grid_id
+#B. Mapping each policy by count and grid_id----
 
 #1. NARW-specific
 
@@ -208,23 +249,175 @@ map_ct_data <- grids_uni %>%
   left_join(narw_map_ct, by = "grid_id")
 
 
-ggplot() +
+narw_ct <- ggplot() +
   geom_sf(
     data = map_ct_data,
     aes(fill = NARW_policies),
     color = NA
   ) +
-  scale_fill_viridis_c(
+  scale_fill_gradient(
+    low = "plum",
+    high = "purple3",
     name = "NARW-specific\npolicies",
     na.value = "grey90"
   ) +
   geom_sf(
     data = east_coast,
     fill = NA,
-    color = "black"
+    color = "grey90"
   ) +
   theme_void()
 
+
+ 
+#TRP
+trp_map_ct <- sum_table %>%
+  group_by(grid_id) %>%
+  summarise(
+    TRP = sum(TRP, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+trp_map_ct <- trp_map_ct %>%
+  mutate(grid_id = as.numeric(grid_id))
+
+trpmap_ct_data <- grids_uni %>%
+  left_join(trp_map_ct, by = "grid_id")
+
+
+trp_ct <- ggplot() +
+  geom_sf(
+    data = trpmap_ct_data,
+    aes(fill = TRP),
+    color = NA
+  ) +
+  scale_fill_gradient(
+    low = "plum",
+    high = "purple3",
+    name = "TRP\npolicies",
+    na.value = "grey90"
+  ) +
+  geom_sf(
+    data = east_coast,
+    fill = NA,
+    color = "grey90"
+  ) +
+  theme_void()
+
+
+
+#Gear-related
+gear_map_ct <- sum_table %>%
+  group_by(grid_id) %>%
+  summarise(
+    Gear_related = sum(Gear_related, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+gear_map_ct <- gear_map_ct %>%
+  mutate(grid_id = as.numeric(grid_id))
+
+grmap_ct_data <- grids_uni %>%
+  left_join(gear_map_ct, by = "grid_id")
+
+
+gr_ct <- ggplot() +
+  geom_sf(
+    data = grmap_ct_data,
+    aes(fill = Gear_related),
+    color = NA
+  ) +
+  scale_fill_gradient(
+    low = "plum",
+    high = "purple3",
+    name = "Gear-related\npolicies",
+    na.value = "grey90"
+  ) +
+  geom_sf(
+    data = east_coast,
+    fill = NA,
+    color = "grey90"
+  ) +
+  theme_void()
+
+
+
+#MPA
+mpa_map_ct <- sum_table %>%
+  group_by(grid_id) %>%
+  summarise(
+    MPA = sum(MPA, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+mpa_map_ct <- mpa_map_ct %>%
+  mutate(grid_id = as.numeric(grid_id))
+
+mpamap_ct_data <- grids_uni %>%
+  left_join(mpa_map_ct, by = "grid_id")
+
+
+mpa_ct <- ggplot() +
+  geom_sf(
+    data = mpamap_ct_data,
+    aes(fill = MPA),
+    color = NA
+  ) +
+  scale_fill_gradient(
+    low = "plum",
+    high = "purple3",
+    name = "MPA\npolicies",
+    na.value = "grey90"
+  ) +
+  geom_sf(
+    data = east_coast,
+    fill = NA,
+    color = "grey90"
+  ) +
+  theme_void()
+
+
+
+#Closed Area -- update scale manually to be whole numbers
+ca_map_ct <- sum_table %>%
+  group_by(grid_id) %>%
+  summarise(
+    Closed_Area = sum(Closed_Area, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ca_map_ct <- ca_map_ct %>%
+  mutate(grid_id = as.numeric(grid_id))
+
+camap_ct_data <- grids_uni %>%
+  left_join(ca_map_ct, by = "grid_id")
+
+
+ca_ct <- ggplot() +
+  geom_sf(
+    data = camap_ct_data,
+    aes(fill = Closed_Area),
+    color = NA
+  ) +
+  scale_fill_gradient(
+    low = "plum",
+    high = "purple3",
+    breaks = c(0, 5, 10),
+    name = "Closed Area\npolicies",
+    na.value = "grey90"
+  ) +
+  geom_sf(
+    data = east_coast,
+    fill = NA,
+    color = "grey90"
+  ) +
+  theme_void()
+
+
+
+
+library(patchwork)
+(narw_ct + trp_ct + gr_ct) / (mpa_ct + ca_ct)
 
 
 #2. Mapping all policy counts together using facet wrap
@@ -260,26 +453,72 @@ map_policy_ct <- grids_uni %>%
   left_join(policy_long, by = "grid_id")
 
 
-ggplot(map_policy_ct) +
-  geom_sf(
+ggplot() +
+  geom_sf(data = map_policy_ct, 
     aes(fill = policy_count),
     color = NA
   ) +
   facet_wrap(~ policy_type) +
   scale_fill_gradient(
-    low = "lightblue",
-    high = "darkblue",
+    low = "plum",
+    high = "purple3",
     name = "Number of policies",
     na.value = "grey90"
   ) +
   geom_sf(
     data = east_coast,
     fill = NA,
-    color = "black"
+    color = "grey90"
   ) +
   theme_void()
 
 
+
+  #1 map of policy counts together
+
+policy_all <- sum_table %>%
+  group_by(grid_id) %>%
+  summarise(
+    policy_count = sum(
+      Closed_Area + Gear_related + TRP + MPA + NARW_specific,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  )
+
+policy_all <- policy_all %>%
+  mutate(grid_id = as.numeric(grid_id))
+
+map_policy_all <- grids_uni %>%
+  left_join(policy_all, by = "grid_id")
+
+
+policy_map <- ggplot() +
+  geom_sf(data = map_policy_all, 
+          aes(fill = policy_count),
+          color = NA
+  ) +
+  scale_fill_gradient(
+    low = "plum",
+    high = "purple3",
+    name = "Number of policies",
+    na.value = "grey90"
+  ) +
+  geom_sf(
+    data = east_coast,
+    fill = NA,
+    color = "grey90"
+  ) +
+  theme_void()
+
+
+#map of stranding counts and map of policy counts
+library(patchwork)
+str_map + policy_map
+
+
+
+#C. Correlation matrices----
 corr_data <- sum_table[, c("Mysticeti", "Odontocetes", "Pinnipeds", "Unidentified", "MPA", "Gear_related", "NARW_specific", "TRP", "Closed_Area")] #excludes Year
 
 corr_data <- data.frame(lapply(corr_data, as.numeric)) #makes sure all numbers are numeric
@@ -325,8 +564,59 @@ cor_sig_matrix
 
 
 
-# Install and load the package
-write.csv(cor_sig_matrix, "my_output.csv", row.names = FALSE)
+  #correlation matrix of strandings and policies by year (not of each type or group)
+    #1. grouping policies by year and grid id and combining all policy categories
+policy_tbl <- sum_table %>%
+  group_by(grid_id, Year_num) %>%
+  summarise(
+    policy_count = sum(
+      Closed_Area + Gear_related + TRP + MPA + NARW_specific,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  ) 
+  #2. grouping all strandings by year and grid id and combining all stranding groups
+str_tbl <- sum_table %>%
+  group_by(grid_id, Year_num) %>%
+  summarise(
+    strand_count = sum(
+      Mysticetes, Odontocetes, Pinnipeds, Unidentified,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  )
+
+str_data <- str_tbl %>% #remove sf/geometry for joining
+  st_drop_geometry()
+
+pol_data <- policy_tbl %>% #remove sf/geometry for joining
+  st_drop_geometry()
+
+combined_data <- str_data %>%
+  inner_join(
+    pol_data,
+    by = c("grid_id", "Year_num")) #double check number of rows for each policy and strandings data with new combined data
+
+
+cor_by_year <- combined_data %>%
+  group_by(Year_num) %>%
+  summarise(
+    correlation = cor(
+      strand_count,
+      policy_count,
+      method = "spearman",
+      use = "complete.obs"
+    ),
+    .groups = "drop"
+  )
+
+cor_by_year #need to add p-value and significance
+
+  #simple line plot of correlaion values over time
+  ggplot(data = cor_by_year, aes(x = Year_num, y = correlation)) + 
+    geom_line(linetype = 2) +
+    theme_classic()
+
 
 
 
